@@ -1,3 +1,6 @@
+#excluding pycache
+__pycache__
+
 #directory
 downloads
 *.mp3
