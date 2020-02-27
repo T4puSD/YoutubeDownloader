@@ -56,6 +56,8 @@ def start_download(url):
 	if not os.path.exists(path_to_download) and not os.path.exists(path_to_download.replace('.m4a','.mp3')):
 		#starting download
 		try:
+			if not os.path.exists(os.path.join('.',DOWN_DIR)):
+				os.mkdir(os.path.join('.',DOWN_DIR))
 			print("Downloading: "+stream_obj.title)
 			stream_obj.download(filepath=path_to_download)
 		except Exception as e:
