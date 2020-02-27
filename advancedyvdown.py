@@ -9,10 +9,7 @@ import time
 DOWN_DIR='downloads'
 LOG_FILE = '.'
 
-#getting audio stream object from pafy
-"""
-This function
-"""
+
 def get_pafy_stream_obj(url):
 	"""This function return stream object from pafy
 	
@@ -26,9 +23,11 @@ def get_pafy_stream_obj(url):
 		video = pafy.new(url)
 		stream_obj = video.getbestaudio(preftype='m4a')
 		return stream_obj
-	except Exception as e:
+	except:
 		print("Error occured in new pafy")
 		return None
+
+
 
 def start_download(url):
 	"""This is a function to download audio file as m4a form pafy streamobj and also convert them to mp3
