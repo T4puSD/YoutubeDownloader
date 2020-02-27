@@ -33,7 +33,7 @@ def start_download(url):
 		sys.exit()
 
 	#checking if the file already exists
-	if not os.path.exists(path_to_download):
+	if not os.path.exists(path_to_download) and not os.path.exists(path_to_download.replace('.m4a','.mp3')):
 		#starting download
 		try:
 			print("Downloading: "+stream_obj.title)
