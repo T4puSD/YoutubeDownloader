@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 
 
-class SongListGenerator():
+class SongListGenerator:
     def prepareLinks(self, songList):
         youtubeUrl = "www.youtube.com"
         tempList = []

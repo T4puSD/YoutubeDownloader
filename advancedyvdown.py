@@ -5,11 +5,23 @@ import pyperclip # need to download this package explicitly
 import subprocess
 import time
 
+# Static Variables
 DOWN_DIR='downloads'
 LOG_FILE = '.'
 
 #getting audio stream object from pafy
+"""
+This function
+"""
 def get_pafy_stream_obj(url):
+	"""This function return stream object from pafy
+	
+	Arguments:
+		url {string} -- The url of the video from youtube
+	
+	Returns:
+		Stream_Obj -- This is a object of Stream class from pafy
+	"""
 	try:
 		video = pafy.new(url)
 		stream_obj = video.getbestaudio(preftype='m4a')
@@ -19,9 +31,18 @@ def get_pafy_stream_obj(url):
 		return None
 
 def start_download(url):
+	"""This is a function to download audio file as m4a form pafy streamobj and also convert them to mp3
+	
+	Arguments:
+		url {string} -- The url of the video from yoututbe
+	"""
 	try:
 		# video = pafy.new(url)
 		# stream_obj = video.getbestaudio(preftype='m4a')
+
+		# trying to get stream obj from pafy
+		# until the object is received witout an errore
+		# the while loop keeps reqesting pafy
 		stream_obj = None
 		while(stream_obj == None):
 			stream_obj = get_pafy_stream_obj(url)
@@ -69,7 +90,7 @@ if __name__ == "__main__":
 	and pyperclip.paste().startswith('https://www.youtube.com/watch?v=') else None
 
 	if url == None:
-		url = sys.argv[1] if len(sys.argv) >1 else None
+		url = sys.argv[1] if len(sys.argv) >1 and sys.argv[1].startswith('https://www.youtube.com/watch?v=') else None
 
 	if url == None:
 		print("No link provided in any means. Not in clipboard not even in as an argument")
