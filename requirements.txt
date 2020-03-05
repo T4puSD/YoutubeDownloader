@@ -2,3 +2,4 @@ pafy
 youtube-dl
 bs4
 requests
+pyperclip
