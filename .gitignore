@@ -4,4 +4,8 @@ __pycache__
 #directory
 downloads
 video_downloads
+temp
+
+#files
 *.mp3
+*.mp4
