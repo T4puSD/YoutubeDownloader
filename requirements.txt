@@ -3,5 +3,3 @@ youtube-dl
 bs4
 requests
 pyperclip
-logging
-argparse
