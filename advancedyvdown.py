@@ -224,7 +224,7 @@ def start_audio_download(url):
                     logging.debug(e)
             logging.debug("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
             ## print statement
-            print("Downloading Video: "+TitleSlugify().slugify_for_windows(stream_obj.title))
+            print("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
             stream_obj.download(filepath=path_to_download)
         except Exception as e:
             logging.debug("Unable to download. Error occured")
