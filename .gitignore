@@ -10,3 +10,6 @@ temp
 *.mp3
 *.mp4
 *.bak
+
+#logfile
+log.txt
