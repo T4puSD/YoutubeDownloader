@@ -4,7 +4,7 @@ Download audio or video from YouTube.
 ## Single File Download at a Time
 For downloading a single file at a time copy the youtube url u want to download and either
 run `python advancedyvdown.py` it will fetch copied link from clipboard or else give the link
-as an argument during runing the script like this: `python advancedyvdown.py -l [Link of the Youtube Video]
+as an argument during runing the script like this: `python advancedyvdown.py -l [Link of the Youtube Video]`
 
 usage: advancedyvdown.py [-h] [-l LINK] [-v] [-hq]
 
