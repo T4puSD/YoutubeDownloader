@@ -20,7 +20,7 @@ FFMPEG_LOG_LEVEL = 'warning'
 # filename=LOG_FILE
 logging.basicConfig(filename=LOG_FILE,
 					level=logging.DEBUG,
-					format = "%(asctime)s:%(levelname)s:%(message)s"
+					format = "%(asctime)s:%(levelname)s:%(filename)s:%(lineno)d:%(message)s"
 					)
 
 
