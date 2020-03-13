@@ -22,7 +22,7 @@ class SongListGenerator:
             for i in atags:
                 href = i['href']
                 if(href.startswith('/watch?')):
-                    if i.text.strip() in ['[Deleted video]','[Private video]']:
+                    if i.text.strip() not in ['[Deleted video]','[Private video]']:
                         uniqueUrls.add(href.split('&')[0])
                         # tempUrl = ""
                         # for i in range(0, len(href)):
