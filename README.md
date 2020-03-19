@@ -9,13 +9,13 @@ as an argument while runing the script like this: `python advancedyvdown.py -l [
 `usage: advancedyvdown.py [-h] [-l LINK] [-v] [-hq]`
 
 Download youtube files either in video or in audio format. By default audio will be
-downloaded if argument -v not given.
+downloaded if argument -v not given.<br>
 
-optional arguments:
-  -h,&nbsp; --help &nbsp;     show this help message and exit
-  -l &nbsp;LINK, --link LINK &nbsp;  Link of the youtube video to download
-  -v,&nbsp; --video    &nbsp;       Download in video format.
-  -hq,&nbsp; --highquality &nbsp;    Download video in high quality this option is depended on '-v' argument
+optional arguments:<br>
+  -h, --help            show this help message and exit<br>
+  -l LINK, --link LINK  Link of the youtube video to download<br>
+  -v, --video           Download in video format.<br>
+  -hq, --highquality    Download video in high quality this option is depended on '-v' argument<br>
   
 ## Youtube Playlist Download
 To download a youtube playlist use `main.py` script like this `python main.py`
