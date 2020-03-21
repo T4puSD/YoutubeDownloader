@@ -83,7 +83,7 @@ def high_quality_video_download(url):
         try:
             logging.debug("Making {} Directory".format(TEMP_DIR))
             os.mkdir(TEMP_DIR)
-       	except Exception as e:
+        except Exception as e:
             logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
             logging.debug(e)
 
@@ -296,6 +296,7 @@ if __name__ == "__main__":
                 start_audio_download(args.link)
         else:
             logging.debug("Link provided is not valid")
+            print('Link provided is not valid')
     else:
         url = pyperclip.paste() if len(pyperclip.paste()) > 10 \
         and pyperclip.paste().startswith('https://www.youtube.com/watch?v=') else None
@@ -309,6 +310,7 @@ if __name__ == "__main__":
                 start_audio_download(url)
         else:
             logging.debug('No link found in the clipboard')
+            print('No link found in the clipboard')
             sys.exit()
 
 
