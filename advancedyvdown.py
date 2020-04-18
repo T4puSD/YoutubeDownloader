@@ -190,7 +190,8 @@ def start_video_download(url):
                 if not os.path.exists(DOWN_DIR_VIDEO):
                     try:
                         logging.debug("Making {} Directory".format(DOWN_DIR_VIDEO))
-                        os.mkdir(DOWN_DIR_VIDEO)
+                        os.makedirs(DOWN_DIR_VIDEO)
+                        # os.mkdir(DOWN_DIR_VIDEO)
                     except Exception as e:
                         logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
                         logging.debug(e)
@@ -242,7 +243,8 @@ def start_audio_download(url):
                 if not os.path.exists(DOWN_DIR_AUDIO):
                     try:
                         logging.debug("Making {} Directory".format(DOWN_DIR_AUDIO))
-                        os.mkdir(DOWN_DIR_AUDIO)
+                        os.makedirs(DOWN_DIR_AUDIO)
+                        # os.mkdir(DOWN_DIR_AUDIO)
                     except Exception as e:
                         logging.debug("Error occured in making Directory {}".format(DOWN_DIR_AUDIO))
                         logging.debug(e)
