@@ -9,7 +9,7 @@ import logging
 from title_slugify import TitleSlugify
 
 # Static Variables
-DOWN_DIR_AUDIO=os.path.join('.','downloads','old_collection') # downloads
+DOWN_DIR_AUDIO=os.path.join('.','downloads') # downloads
 DOWN_DIR_VIDEO=os.path.join('.','video_downloads')
 TEMP_DIR = os.path.join('.','temp')
 LOG_FILE = os.path.join('.','log.txt')
@@ -22,6 +22,9 @@ logging.basicConfig(filename=LOG_FILE,
 					level=logging.DEBUG,
 					format = "%(asctime)s:%(levelname)s:%(filename)s:%(lineno)d:%(message)s"
 					)
+# logging to both file and to console with this streamhandler
+# if console output is no longer needed commnet this line bellow
+logging.getLogger().addHandler(logging.StreamHandler())
 
 
 
@@ -107,8 +110,6 @@ def high_quality_video_download(url):
 
         try:
             logging.debug("Downloading HQ Audio: "+TitleSlugify().slugify_for_windows(audio.title))
-            ## print statement
-            print("Downloading HQ Video: "+TitleSlugify().slugify_for_windows(audio.title))
             audio.download(filepath=temp_path_to_download_audio)
         except Exception as e:
             logging.debug("Exception occured at high_quality_video_download audio downloader")
@@ -144,6 +145,7 @@ def high_quality_video_download(url):
         try:
             logging.debug("Combining HQ Audio and Video: "+TitleSlugify().slugify_for_windows(audio.title))
             subprocess.run(cmd)
+            logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
         except Exception as e:
             logging.debug("Errore occured during runing combining ffmpeg command")
             logging.debug(e)
@@ -196,9 +198,8 @@ def start_video_download(url):
                         logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
                         logging.debug(e)
                 logging.debug("Downloading Video: "+TitleSlugify().slugify_for_windows(stream_obj.title))
-                ## print statement
-                print("Downloading Video: "+TitleSlugify().slugify_for_windows(stream_obj.title))
                 stream_obj.download(filepath=path_to_download)
+                logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
             except Exception as e:
                 logging.debug("Unable to download. Error occured")
                 logging.debug(e)
@@ -249,9 +250,8 @@ def start_audio_download(url):
                         logging.debug("Error occured in making Directory {}".format(DOWN_DIR_AUDIO))
                         logging.debug(e)
                 logging.debug("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
-                ## print statement
-                print("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
                 stream_obj.download(filepath=path_to_download)
+                logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_AUDIO))
             except Exception as e:
                 logging.debug("Unable to download. Error occured")
                 logging.debug(e)
@@ -298,7 +298,6 @@ if __name__ == "__main__":
                 start_audio_download(args.link)
         else:
             logging.debug("Link provided is not valid")
-            print('Link provided is not valid')
     else:
         url = pyperclip.paste() if len(pyperclip.paste()) > 10 \
         and pyperclip.paste().startswith('https://www.youtube.com/watch?v=') else None
@@ -312,7 +311,6 @@ if __name__ == "__main__":
                 start_audio_download(url)
         else:
             logging.debug('No link found in the clipboard')
-            print('No link found in the clipboard')
             sys.exit()
 
 
