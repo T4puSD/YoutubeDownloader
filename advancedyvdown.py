@@ -3,19 +3,31 @@ import sys
 import pafy # need to download this package explicitly
 import pyperclip # need to download this package explicitly
 import subprocess
+import json
 import time
 import argparse
 import logging
 from title_slugify import TitleSlugify
-from config import conf
+from config import conf, download_conf, generateJsonFile
 from notifier import notifyAboutTheService
 
+
+# genererating configure.json file at first to
+# load basic config files
+if not os.path.exists(os.path.join('.','configure.json')):
+    # conf['log_file'] = ['.','logging.txt']
+    # download_conf['media_type'] = 'video'
+    # generateJsonFile(basic_conf=conf,basic_download_conf=download_conf)
+    generateJsonFile()
+if os.path.exists(os.path.join('.','configure.json')):
+    with open("configure.json",'r') as jsonFile:
+        data = json.load(jsonFile)
 # Static Variables
 # * is used to unpack from list
-DOWN_DIR_AUDIO=os.path.join(*conf.get('download_dir_audio')) # downloads
-DOWN_DIR_VIDEO=os.path.join(*conf.get('download_dir_video'))
-TEMP_DIR = os.path.join(*conf.get('temp_dir'))
-LOG_FILE = os.path.join(*conf.get('log_file'))
+DOWN_DIR_AUDIO=os.path.join(*data.get('conf').get('download_dir_audio')) # downloads
+DOWN_DIR_VIDEO=os.path.join(*data.get('conf').get('download_dir_video'))
+TEMP_DIR = os.path.join(*data.get('conf').get('temp_dir'))
+LOG_FILE = os.path.join(*data.get('conf').get('log_file'))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 
@@ -333,7 +345,7 @@ if __name__ == "__main__":
         if args.link.startswith('https://www.youtube.com/watch?v='):
             if args.video:
                 if args.highquality:
-                    high_quality_video_download(args.link)
+                    start_high_quality_video_download(args.link)
                 else:
                     start_video_download(args.link)
             else:
@@ -346,7 +358,7 @@ if __name__ == "__main__":
         if url != None:
             if args.video:
                 if args.highquality:
-                    high_quality_video_download(url)
+                    start_high_quality_video_download(url)
                 else:
                     start_video_download(url)
             else:
