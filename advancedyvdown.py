@@ -7,12 +7,15 @@ import time
 import argparse
 import logging
 from title_slugify import TitleSlugify
+from config import conf
+from notifier import notifyAboutTheService
 
 # Static Variables
-DOWN_DIR_AUDIO=os.path.join('.','downloads') # downloads
-DOWN_DIR_VIDEO=os.path.join('.','video_downloads')
-TEMP_DIR = os.path.join('.','temp')
-LOG_FILE = os.path.join('.','log.txt')
+# * is used to unpack from list
+DOWN_DIR_AUDIO=os.path.join(*conf.get('download_dir_audio')) # downloads
+DOWN_DIR_VIDEO=os.path.join(*conf.get('download_dir_video'))
+TEMP_DIR = os.path.join(*conf.get('temp_dir'))
+LOG_FILE = os.path.join(*conf.get('log_file'))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 
@@ -71,28 +74,37 @@ def get_pafy_stream_obj(url,format='AUDIO',only_video=False):
         logging.debug(e)
         return None
 
-def high_quality_video_download(url):
+def start_high_quality_video_download(url):
     """ This function download both video and audio separately
         and combine them to produce 1080p video.
 
         Arguments:
             url {string} -- The url of the video from youtube
     """
-    logging.debug("Initiating - {}".format(high_quality_video_download.__name__))
+    logging.debug("Initiating - {}".format(start_high_quality_video_download.__name__))
     # making temp directory if not exist
     # this folder will be used to temporary storing video and audio files
     # those temporary files will be deleted once combine operatoin is successfull
     if not os.path.exists(TEMP_DIR):
         try:
             logging.debug("Making {} Directory".format(TEMP_DIR))
-            os.mkdir(TEMP_DIR)
+            os.makedirs(TEMP_DIR)
         except Exception as e:
             logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
             logging.debug(e)
 
+    if not os.path.exists(DOWN_DIR_VIDEO):
+        try:
+            logging.debug("Making {} Directory".format(DOWN_DIR_VIDEO))
+            os.makedirs(DOWN_DIR_VIDEO)
+        except Exception as e:
+            logging.debug("Error occured in making Directory {}".format(DOWN_DIR_VIDEO))
+            logging.debug(e)
+
     # downloading only audio
+    timeout = 5
     audio = None
-    while audio == None:
+    while audio == None and timeout>0:
         try:
             audio = get_pafy_stream_obj(url)
             time.sleep(1)
@@ -100,6 +112,7 @@ def high_quality_video_download(url):
             logging.debug("Video is not availble in Youtube.")
             logging.debug("Link: "+ url)
             break
+        timeout-=1
     # if audio is not avilable 
     # then video is also not available
     if audio is not None:
@@ -117,8 +130,9 @@ def high_quality_video_download(url):
 
 
         # downloaing only video
+        timeout = 5
         video = None
-        while video == None:
+        while video == None and timeout>0:
             try:
                 video = get_pafy_stream_obj(url,format='VIDEO',only_video=True)
                 time.sleep(1)
@@ -126,36 +140,50 @@ def high_quality_video_download(url):
                 logging.debug("Video is not available in Youtube.")
                 logging.debug("Link: "+url)
                 break
-        # slugifying title
-        slugify_video_title = TitleSlugify().slugify_for_windows(video.title+'.'+video.extension)
-        temp_path_to_download_video = os.path.join(TEMP_DIR,slugify_video_title)
+            timeout-=1
+        
+        if video is not None:
+            # slugifying title
+            slugify_video_title = TitleSlugify().slugify_for_windows(video.title+'.'+video.extension)
+            temp_path_to_download_video = os.path.join(TEMP_DIR,slugify_video_title)
 
-        try:
-            logging.debug("Downloading HQ Video: "+TitleSlugify().slugify_for_windows(video.title))
-            video.download(filepath=temp_path_to_download_video)
-        except Exception as e:
-            logging.debug("Exception occured at high_quality_video_download video downloader")
-            logging.debug(e)
-
-        output_path = os.path.join(DOWN_DIR_VIDEO,slugify_video_title)
-        # combining both video and audio
-        cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',temp_path_to_download_video,'-i',temp_path_to_download_audio,'-c','copy','-strict','experimental',output_path]
-
-        # running command with subprocess
-        try:
-            logging.debug("Combining HQ Audio and Video: "+TitleSlugify().slugify_for_windows(audio.title))
-            subprocess.run(cmd)
-            logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
-        except Exception as e:
-            logging.debug("Errore occured during runing combining ffmpeg command")
-            logging.debug(e)
-        finally:
             try:
-                os.remove(temp_path_to_download_audio)
-                os.remove(temp_path_to_download_video)
+                logging.debug("Downloading HQ Video: "+TitleSlugify().slugify_for_windows(video.title))
+                video.download(filepath=temp_path_to_download_video)
             except Exception as e:
-                logging.debug("Unable to remove temporary files in temp folder")
+                logging.debug("Exception occured at high_quality_video_download video downloader")
                 logging.debug(e)
+
+            output_path = os.path.join(DOWN_DIR_VIDEO,slugify_video_title)
+            if not os.path.exists(output_path):
+                # combining both video and audio
+                cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',temp_path_to_download_video,'-i',temp_path_to_download_audio,'-c','copy','-strict','experimental',output_path]
+
+                # running command with subprocess
+                try:
+                    logging.debug("Combining HQ Audio and Video: "+TitleSlugify().slugify_for_windows(audio.title))
+                    logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
+                    subprocess.run(cmd)
+                    logging.debug("DOWNLOADED=> "+slugify_video_title)
+                    notifyAboutTheService("Downloaded",slugify_video_title)
+
+                except Exception as e:
+                    notifyAboutTheService("Error Downloading",slugify_video_title)
+                    logging.debug("Errore occured during runing combining ffmpeg command")
+                    logging.debug(e)
+                finally:
+                    try:
+                        os.remove(temp_path_to_download_audio)
+                        os.remove(temp_path_to_download_video)
+                    except Exception as e:
+                        logging.debug("Unable to remove temporary files in temp folder({})".format(TEMP_DIR))
+                        logging.debug(e)
+            else:
+                logging.debug("File already exist")
+        else:
+            logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
+    else:
+        logging.debug("Unable to find the audio file at this time. Timeout!! Try again later.")
 
 
 
@@ -168,11 +196,13 @@ def start_video_download(url):
     """
     logging.debug("Initiating - {}".format(start_video_download.__name__))
 
+    timeout = 5
     stream_obj = None
-    while(stream_obj == None):
+    while(stream_obj == None and timeout > 0):
         try:
             stream_obj = get_pafy_stream_obj(url,format='VIDEO')
             time.sleep(1)
+            timeout-=1
         except OSError:
             logging.debug("Video is not available in Youtube.")
             logging.debug("Link: "+url)
@@ -198,13 +228,18 @@ def start_video_download(url):
                         logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
                         logging.debug(e)
                 logging.debug("Downloading Video: "+TitleSlugify().slugify_for_windows(stream_obj.title))
-                stream_obj.download(filepath=path_to_download)
                 logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
+                stream_obj.download(filepath=path_to_download)
+                logging.debug("DOWNLOADED=> "+slugify_video_title)
+                notifyAboutTheService("Downloded",slugify_video_title)
             except Exception as e:
+                notifyAboutTheService("Error Downloading",slugify_video_title)
                 logging.debug("Unable to download. Error occured")
                 logging.debug(e)
         else:
             logging.debug("File already exist")
+    else:
+        logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
 
 
 def start_audio_download(url):
@@ -219,11 +254,13 @@ def start_audio_download(url):
         # the while loop keeps reqesting pafy
         # if video is not available in youtube
         # gives OSError and breaks the loop
+    timeout = 5
     stream_obj = None
-    while(stream_obj == None):
+    while(stream_obj == None and timeout >0):
         try:
             stream_obj = get_pafy_stream_obj(url,format='AUDIO')
             time.sleep(1)
+            timeout-=1
         except OSError:
             logging.debug("Video is not available in Youtube.")
             logging.debug("Link: "+url)
@@ -261,7 +298,10 @@ def start_audio_download(url):
             # logging.debug(" ".join(cmd))
             try:
                 subprocess.run(cmd)
+                logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
+                notifyAboutTheService("Downloaded",slugify_audio_title.replace("m4a","mp3"))
             except Exception as e:
+                notifyAboutTheService("Error Downloading",slugify_audio_title.replace("m4a","mp3"))
                 logging.debug("Errore occured in converting file")
                 logging.debug(e)
 
@@ -273,6 +313,8 @@ def start_audio_download(url):
                 logging.debug(e)
         else:
             logging.debug("File already exists")
+    else:
+        logging.debug("Unable to find the audio file at this time. Timeout!! Try again later.")
 
 
 # this code will only run if it is executed directly
@@ -282,7 +324,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Download youtube files either in video or in audio format. By default audio will be downloaded if argument -v not given.')
     parser.add_argument('-l','--link',type=str,help='Link of the youtube video to download')
     parser.add_argument('-v','--video',action='store_true',help='Download in video format.')
-    parser.add_argument('-hq','--highquality',action='store_true',help="Download video in high quality this option is depended on '-v' argument")
+    parser.add_argument('-hq','--highquality',action='store_true',help="Download video in high quality. This option is depended on '-v' argument.")
     # parser.add_argument('-a','--audio',action='store_true',help='Download in audio format.')
     args = parser.parse_args()
 
@@ -312,17 +354,3 @@ if __name__ == "__main__":
         else:
             logging.debug('No link found in the clipboard')
             sys.exit()
-
-
-
-    # checking for links in cipboard or in sys argument
-    # url = pyperclip.paste() if len(pyperclip.paste()) > 10 \
-    # and pyperclip.paste().startswith('https://www.youtube.com/watch?v=') else None
-
-    # if url == None:
-    #       url = sys.argv[1] if len(sys.argv) >1 and sys.argv[1].startswith('https://www.youtube.com/watch?v=') else None
-
-    # if url == None:
-    #       logging.debug("No link provided in any means. Not in clipboard not even in as an argument")
-    #       sys.exit()
-    # start_audio_download(url)
