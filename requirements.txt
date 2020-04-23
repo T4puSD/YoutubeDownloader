@@ -1,5 +1,7 @@
-pafy
-youtube-dl
-bs4
-requests
-pyperclip
+beautifulsoup4==4.9.0
+bs4==0.0.1
+notify2==0.3.1
+pafy==0.5.5
+pyperclip==1.8.0
+requests==2.23.0
+youtube-dl==2020.3.24
