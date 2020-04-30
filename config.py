@@ -16,7 +16,8 @@ config['conf'] = {
     'download_dir_video':'testdownloads,video',
     'temp_dir':'temp',
     'log_file':'log.txt',
-    'download_mode':'single'
+    'download_mode':'single',
+    'number_of_threads':'2'
 }
 
 config['media_conf'] = {
