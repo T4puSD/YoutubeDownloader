@@ -7,27 +7,26 @@ import json
 import time
 import argparse
 import logging
+from configparser import ConfigParser
+from config import generateConfigFile
 from title_slugify import TitleSlugify
-from config import conf, download_conf, generateJsonFile
 from notifier import notifyAboutTheService
 
 
 # genererating configure.json file at first to
 # load basic config files
-if not os.path.exists(os.path.join('.','configure.json')):
-    # conf['log_file'] = ['.','logging.txt']
-    # download_conf['media_type'] = 'video'
-    # generateJsonFile(basic_conf=conf,basic_download_conf=download_conf)
-    generateJsonFile()
-if os.path.exists(os.path.join('.','configure.json')):
-    with open("configure.json",'r') as jsonFile:
-        data = json.load(jsonFile)
+if not os.path.exists(os.path.join('.','configure.ini')):
+    generateConfigFile()
+if os.path.exists(os.path.join('.','configure.ini')):
+    config = ConfigParser()
+    config.read('configure.ini')
+
 # Static Variables
 # * is used to unpack from list
-DOWN_DIR_AUDIO=os.path.join(*data.get('conf').get('download_dir_audio')) # downloads
-DOWN_DIR_VIDEO=os.path.join(*data.get('conf').get('download_dir_video'))
-TEMP_DIR = os.path.join(*data.get('conf').get('temp_dir'))
-LOG_FILE = os.path.join(*data.get('conf').get('log_file'))
+DOWN_DIR_AUDIO=os.path.join(*config['conf'].get('download_dir_audio').split(',')) # downloads
+DOWN_DIR_VIDEO=os.path.join(*config['conf'].get('download_dir_video').split(','))
+TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
+LOG_FILE = os.path.join(*config['conf'].get('log_file').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 

@@ -2,15 +2,26 @@ import os
 import time
 # import json
 import pyperclip
+from configparser import ConfigParser
+from config import generateConfigFile
 from advancedyvdown import logging
-from config import conf,download_conf
 from notifier import notifyAboutTheService
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from advancedyvdown import start_audio_download, start_video_download, start_high_quality_video_download
 
-MEDIA_TYPE = download_conf.get('media_type')
-MEDIA_QUALITY = download_conf.get('media_quality')
-DOWNLOAD_MODE = download_conf.get('download_mode')
+
+# genererating configure.ini file at first to
+# load basic config files
+if not os.path.exists(os.path.join('.','configure.ini')):
+    generateConfigFile()
+if os.path.exists(os.path.join('.','configure.ini')):
+    config = ConfigParser()
+    config.read('configure.ini')
+
+
+MEDIA_TYPE = config['media_conf'].get('media_type')
+MEDIA_QUALITY = config['media_conf'].get('media_quality')
+DOWNLOAD_MODE = config['conf'].get('download_mode')
 
 #defining threadpoolexecutor
 executor = ThreadPoolExecutor(max_workers=3)
@@ -33,12 +44,12 @@ def handling_NewCopiedTask():
             if content.startswith('https://www.youtube.com/watch?v=') and len(content.split("=")) > 1:
                 # print(content)
                 try:
-                    if(download_conf.get('media_type') == 'audio'):
+                    if(config['media_conf'].get('media_type') == 'audio'):
                         futures.append(executor.submit(start_audio_download,content))
-                    elif(download_conf.get('media_type') == 'video'):
-                        if(download_conf.get('media_quality') == 'normal'):
+                    elif(config['media_conf'].get('media_type') == 'video'):
+                        if(config['media_conf'].get('media_quality') == 'normal'):
                             futures.append(executor.submit(start_video_download,content))
-                        elif(download_conf.get('media_quality') == 'hq'):
+                        elif(config['media_conf'].get('media_quality') == 'hq'):
                             futures.append(executor.submit(start_high_quality_video_download,content))
                     
                     for future in as_completed(futures):
