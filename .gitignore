@@ -11,6 +11,9 @@ temp
 *.mp4
 *.bak
 
+#configfile
+*.ini
+
 #logfile
 log.txt
 
