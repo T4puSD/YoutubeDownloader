@@ -112,52 +112,27 @@ def start_high_quality_video_download(url):
             logging.debug("Error occured in making Directory {}".format(DOWN_DIR_VIDEO))
             logging.debug(e)
 
-    # downloading only audio
+
+    # downloaing only video
     timeout = 5
-    audio = None
-    while audio == None and timeout>0:
+    video = None
+    while video == None and timeout>0:
         try:
-            audio = get_pafy_stream_obj(url)
+            video = get_pafy_stream_obj(url,format='VIDEO',only_video=True)
             time.sleep(1)
         except OSError:
-            logging.debug("Video is not availble in Youtube.")
-            logging.debug("Link: "+ url)
+            logging.debug("Video is not available in Youtube.")
+            logging.debug("Link: "+url)
             break
         timeout-=1
-    # if audio is not avilable 
-    # then video is also not available
-    if audio is not None:
+    
+    if video is not None:
         # slugifying title
-        slugify_audio_title = TitleSlugify().slugify_for_windows(audio.title+'.'+audio.extension)
-        # setting download location
-        temp_path_to_download_audio = os.path.join(TEMP_DIR,slugify_audio_title)
+        slugify_video_title = TitleSlugify().slugify_for_windows(video.title+'.'+video.extension)
+        temp_path_to_download_video = os.path.join(TEMP_DIR,slugify_video_title)
 
-        try:
-            logging.debug("Downloading HQ Audio: "+TitleSlugify().slugify_for_windows(audio.title))
-            audio.download(filepath=temp_path_to_download_audio)
-        except Exception as e:
-            logging.debug("Exception occured at high_quality_video_download audio downloader")
-            logging.debug(e)
-
-
-        # downloaing only video
-        timeout = 5
-        video = None
-        while video == None and timeout>0:
-            try:
-                video = get_pafy_stream_obj(url,format='VIDEO',only_video=True)
-                time.sleep(1)
-            except OSError:
-                logging.debug("Video is not available in Youtube.")
-                logging.debug("Link: "+url)
-                break
-            timeout-=1
-        
-        if video is not None:
-            # slugifying title
-            slugify_video_title = TitleSlugify().slugify_for_windows(video.title+'.'+video.extension)
-            temp_path_to_download_video = os.path.join(TEMP_DIR,slugify_video_title)
-
+        output_path = os.path.join(DOWN_DIR_VIDEO,slugify_video_title)
+        if not os.path.exists(output_path):
             try:
                 logging.debug("Downloading HQ Video: "+TitleSlugify().slugify_for_windows(video.title))
                 video.download(filepath=temp_path_to_download_video)
@@ -165,8 +140,34 @@ def start_high_quality_video_download(url):
                 logging.debug("Exception occured at high_quality_video_download video downloader")
                 logging.debug(e)
 
-            output_path = os.path.join(DOWN_DIR_VIDEO,slugify_video_title)
-            if not os.path.exists(output_path):
+            # downloading only audio
+            timeout = 5
+            audio = None
+            while audio == None and timeout>0:
+                try:
+                    audio = get_pafy_stream_obj(url)
+                    time.sleep(1)
+                except OSError:
+                    logging.debug("Video is not availble in Youtube.")
+                    logging.debug("Link: "+ url)
+                    break
+                timeout-=1
+            # if audio is not avilable 
+            # then video is also not available
+            if audio is not None:
+                # slugifying title
+                slugify_audio_title = TitleSlugify().slugify_for_windows(audio.title+'.'+audio.extension)
+                # setting download location
+                temp_path_to_download_audio = os.path.join(TEMP_DIR,slugify_audio_title)
+
+                try:
+                    logging.debug("Downloading HQ Audio: "+TitleSlugify().slugify_for_windows(audio.title))
+                    audio.download(filepath=temp_path_to_download_audio)
+                except Exception as e:
+                    logging.debug("Exception occured at high_quality_video_download audio downloader")
+                    logging.debug(e)
+
+
                 # combining both video and audio
                 cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',temp_path_to_download_video,'-i',temp_path_to_download_audio,'-c','copy','-strict','experimental',output_path]
 
@@ -189,12 +190,10 @@ def start_high_quality_video_download(url):
                     except Exception as e:
                         logging.debug("Unable to remove temporary files in temp folder({})".format(TEMP_DIR))
                         logging.debug(e)
-            else:
-                logging.debug("File already exist")
         else:
-            logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
+            logging.debug("File Already Exists! Path: "+output_path)
     else:
-        logging.debug("Unable to find the audio file at this time. Timeout!! Try again later.")
+        logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
 
 
 
@@ -248,7 +247,7 @@ def start_video_download(url):
                 logging.debug("Unable to download. Error occured")
                 logging.debug(e)
         else:
-            logging.debug("File already exist")
+            logging.debug("File Already Exists! Path: "+path_to_download)
     else:
         logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
 
@@ -323,7 +322,7 @@ def start_audio_download(url):
                 logging.debug("Errore removing actual file")
                 logging.debug(e)
         else:
-            logging.debug("File already exists")
+            logging.debug("File Already Exists! Path: "+path_to_download)
     else:
         logging.debug("Unable to find the audio file at this time. Timeout!! Try again later.")
 
