@@ -44,12 +44,12 @@ def handling_NewCopiedTask():
             if content.startswith('https://www.youtube.com/watch?v=') and len(content.split("=")) > 1:
                 # print(content)
                 try:
-                    if(config['media_conf'].get('media_type') == 'audio'):
+                    if(MEDIA_TYPE == 'audio'):
                         futures.append(executor.submit(start_audio_download,content))
-                    elif(config['media_conf'].get('media_type') == 'video'):
-                        if(config['media_conf'].get('media_quality') == 'normal'):
+                    elif(MEDIA_TYPE == 'video'):
+                        if(MEDIA_QUALITY == 'normal'):
                             futures.append(executor.submit(start_video_download,content))
-                        elif(config['media_conf'].get('media_quality') == 'hq'):
+                        elif(MEDIA_QUALITY == 'hq'):
                             futures.append(executor.submit(start_high_quality_video_download,content))
                     
                     for future in as_completed(futures):

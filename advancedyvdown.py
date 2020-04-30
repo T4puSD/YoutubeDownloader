@@ -139,6 +139,8 @@ def start_high_quality_video_download(url):
             except Exception as e:
                 logging.debug("Exception occured at high_quality_video_download video downloader")
                 logging.debug(e)
+                # this need to be checked
+                return
 
             # downloading only audio
             timeout = 5
@@ -296,30 +298,33 @@ def start_audio_download(url):
                     except Exception as e:
                         logging.debug("Error occured in making Directory {}".format(DOWN_DIR_AUDIO))
                         logging.debug(e)
+
                 logging.debug("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
+                # intiate the download
                 stream_obj.download(filepath=path_to_download)
                 logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_AUDIO))
+
+                #converting to mp3
+                cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',path_to_download,'-vn','-ab','128k','-ar','44100','-y',os.path.join(DOWN_DIR_AUDIO,slugify_audio_title.replace('.m4a','.mp3'))]
+                # logging.debug(" ".join(cmd))
+                try:
+                    subprocess.run(cmd)
+                    logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
+                    notifyAboutTheService("Downloaded",slugify_audio_title.replace("m4a","mp3"))
+                except Exception as e:
+                    notifyAboutTheService("Error Downloading",slugify_audio_title.replace("m4a","mp3"))
+                    logging.debug("Errore occured in converting file")
+                    logging.debug(e)
+
+                try:
+                    # subprocess.run(['rm',path_to_download])
+                    os.remove(path_to_download)
+                except Exception as e:
+                    logging.debug("Errore removing actual file")
+                    logging.debug(e)
+
             except Exception as e:
                 logging.debug("Unable to download. Error occured")
-                logging.debug(e)
-
-            #converting to mp3
-            cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',path_to_download,'-vn','-ab','128k','-ar','44100','-y',os.path.join(DOWN_DIR_AUDIO,slugify_audio_title.replace('.m4a','.mp3'))]
-            # logging.debug(" ".join(cmd))
-            try:
-                subprocess.run(cmd)
-                logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
-                notifyAboutTheService("Downloaded",slugify_audio_title.replace("m4a","mp3"))
-            except Exception as e:
-                notifyAboutTheService("Error Downloading",slugify_audio_title.replace("m4a","mp3"))
-                logging.debug("Errore occured in converting file")
-                logging.debug(e)
-
-            try:
-                # subprocess.run(['rm',path_to_download])
-                os.remove(path_to_download)
-            except Exception as e:
-                logging.debug("Errore removing actual file")
                 logging.debug(e)
         else:
             logging.debug("File Already Exists! Path: "+path_to_download)
