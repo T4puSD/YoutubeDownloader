@@ -12,8 +12,8 @@ def generateConfigFile(confini = None):
 config = ConfigParser()
 
 config['conf'] = {
-    'download_dir_audio':'testdownloads',
-    'download_dir_video':'testdownloads,video',
+    'download_dir_audio':'testdownloads2',
+    'download_dir_video':'testdownloads2,video',
     'temp_dir':'temp',
     'log_file':'log.txt',
     'download_mode':'single',
