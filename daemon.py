@@ -5,7 +5,7 @@ from queue import Queue
 from configparser import ConfigParser
 from concurrent.futures import as_completed
 from config import generateConfigFile
-from advancedyvdown import logging
+from debugger import logging
 from advancedyvdown import start_audio_download
 from advancedyvdown import start_video_download
 from advancedyvdown import start_high_quality_video_download

@@ -1,6 +1,7 @@
 import concurrent.futures
 from getuList import SongListGenerator
-from advancedyvdown import start_audio_download, start_video_download, logging
+from debugger import logging
+from advancedyvdown import start_audio_download, start_video_download
 
 #url = 'https://www.youtube.com/playlist?list=PLRiSVT9MWtYwyhhgVNnRDTpCRvF-t2lc8'
 url = input("Enter a valid YouTube  Playlist Link:")

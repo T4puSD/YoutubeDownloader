@@ -6,7 +6,8 @@ import subprocess
 import json
 import time
 import argparse
-import logging
+# import logging
+from debugger import logging
 from configparser import ConfigParser
 from config import generateConfigFile
 from title_slugify import TitleSlugify
@@ -26,21 +27,8 @@ if os.path.exists(os.path.join('.','configure.ini')):
 DOWN_DIR_AUDIO=os.path.join(*config['conf'].get('download_dir_audio').split(',')) # downloads
 DOWN_DIR_VIDEO=os.path.join(*config['conf'].get('download_dir_video').split(','))
 TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
-LOG_FILE = os.path.join(*config['conf'].get('log_file').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
-
-# Setting up logger
-# filename=LOG_FILE
-logging.basicConfig(filename=LOG_FILE,
-					level=logging.DEBUG,
-					format = "%(asctime)s:%(levelname)s:%(filename)s:%(lineno)d:%(message)s"
-					)
-# logging to both file and to console with this streamhandler
-# if console output is no longer needed commnet this line bellow
-logging.getLogger().addHandler(logging.StreamHandler())
-
-
 
 def get_pafy_stream_obj(url,format='AUDIO',only_video=False):
     """This function return stream object from pafy

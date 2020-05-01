@@ -1,6 +1,6 @@
 import os
 import shutil
-from advancedyvdown import logging
+from debugger import logging
 from config import conf
 
 def cleanJunk():
