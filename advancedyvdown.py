@@ -12,6 +12,7 @@ from configparser import ConfigParser
 from config import generateConfigFile
 from title_slugify import TitleSlugify
 from notifier import notifyAboutTheService
+from metaDataEditor import addTitle, addPicture
 
 
 # genererating configure.json file at first to
@@ -30,7 +31,7 @@ TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 
-def get_pafy_stream_obj(url,format='AUDIO',only_video=False):
+def get_pafy_stream_obj(url,format=None,only_video=False):
     """This function return stream object from pafy
 
     Arguments:
@@ -40,28 +41,33 @@ def get_pafy_stream_obj(url,format='AUDIO',only_video=False):
             Stream_Obj -- This is a object of Stream class from pafy
     """
     try:
-        video = pafy.new(url)
+        obj = pafy.new(url)
+        # returning only the pafy obj if format is not given
+        if format == None:
+            return obj
+        
         stream_obj = None
+        # returning format specified in the parameter
         if format == 'AUDIO':
             logging.debug("Getting audio pafy stream_object")
-            stream_obj = video.getbestaudio(preftype='m4a')
+            stream_obj = obj.getbestaudio(preftype='m4a')
         if format == 'VIDEO':
             if only_video:
                 # get only video at 1080p
-                # stream_obj = video.getbestvideo(preftype='mp4')
+                # stream_obj = obj.getbestvideo(preftype='mp4')
 
                 ## iterating from backward as best streams are there and
                 ## slecting best 1920x1080p mp4 stream
                 logging.debug("Getting HQ video pafy stream_object")
-                for stream in video.videostreams[::-1]:
+                for stream in obj.videostreams[::-1]:
                     if stream.extension == 'mp4':
                         if stream.dimensions[0] == 1920 and stream.dimensions[1] == 1080:
                             stream_obj = stream
                             break
             else:
-                # get best will return both audio and video normaly at 640p
+                # get best will return both audio and obj normaly at 640p
                 logging.debug("Getting normal-video pafy stream_object")
-                stream_obj = video.getbest(preftype='mp4')
+                stream_obj = obj.getbest(preftype='mp4')
         return stream_obj
 
     except OSError as e:
@@ -135,7 +141,7 @@ def start_high_quality_video_download(url):
             audio = None
             while audio == None and timeout>0:
                 try:
-                    audio = get_pafy_stream_obj(url)
+                    audio = get_pafy_stream_obj(url,format='AUDIO')
                     time.sleep(1)
                 except OSError:
                     logging.debug("Video is not availble in Youtube.")
@@ -258,7 +264,7 @@ def start_audio_download(url):
     stream_obj = None
     while(stream_obj == None and timeout >0):
         try:
-            stream_obj = get_pafy_stream_obj(url,format='AUDIO')
+            pafy_obj = get_pafy_stream_obj(url)
             time.sleep(1)
             timeout-=1
         except OSError:
@@ -269,7 +275,9 @@ def start_audio_download(url):
             logging.debug("Error occured in new pafy")
             logging.debug(e)
             # sys.exit()
-    if stream_obj is not None:
+    if pafy_obj is not None:
+        # getting audio streams from pafy_obj
+        stream_obj = pafy_obj.getbestaudio(preftype='m4a')
         # slugifying title
         slugify_audio_title = TitleSlugify().slugify_for_windows(stream_obj.title+'.'+stream_obj.extension)
         path_to_download = os.path.join(DOWN_DIR_AUDIO, slugify_audio_title)
@@ -298,6 +306,9 @@ def start_audio_download(url):
                 try:
                     subprocess.run(cmd)
                     logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
+                    # adding unicode title from stream obj
+                    addTitle(path_to_download.replace('m4a','mp3'),stream_obj.title)
+                    addPicture(path_to_download.replace('m4a','mp3'),pafy_obj.thumb)
                     notifyAboutTheService("Downloaded",slugify_audio_title.replace("m4a","mp3"))
                 except Exception as e:
                     notifyAboutTheService("Error Downloading",slugify_audio_title.replace("m4a","mp3"))
