@@ -1,6 +1,7 @@
 import os
 from configparser import ConfigParser
 
+CONFIG_FILE_NAME = 'configure.ini'
 config = ConfigParser()
 
 config['conf'] = {
@@ -18,16 +19,19 @@ config['media_conf'] = {
 }
 
 def getConfigInstance():
-    if not os.path.exists(os.path.join('.','configure.ini')):
+    if not os.path.exists(os.path.join('.',CONFIG_FILE_NAME)):
         generateConfigFile()
-    return config
+        return config
+    else: 
+        config.read(CONFIG_FILE_NAME)
+        return config
 
 def generateConfigFile(confini = None):
     if confini !=None:
-        with open('configure.ini','w') as configfile:
+        with open(CONFIG_FILE_NAME,'w') as configfile:
             confini.write(configfile)
     else:
-        with open('configure.ini','w') as configfile:
+        with open(CONFIG_FILE_NAME,'w') as configfile:
             config.write(configfile)
 
 if __name__ == '__main__':
