@@ -1,14 +1,6 @@
 import os
 from configparser import ConfigParser
 
-def generateConfigFile(confini = None):
-    if confini !=None:
-        with open('configure.ini','w') as configfile:
-            confini.write(configfile)
-    else:
-        with open('configure.ini','w') as configfile:
-            config.write(configfile)
-
 config = ConfigParser()
 
 config['conf'] = {
@@ -24,6 +16,19 @@ config['media_conf'] = {
     'media_type':'audio',
     'media_quality':'normal'
 }
+
+def getConfigInstance():
+    if not os.path.exists(os.path.join('.','configure.ini')):
+        generateConfigFile()
+    return config
+
+def generateConfigFile(confini = None):
+    if confini !=None:
+        with open('configure.ini','w') as configfile:
+            confini.write(configfile)
+    else:
+        with open('configure.ini','w') as configfile:
+            config.write(configfile)
 
 if __name__ == '__main__':
     generateConfigFile()
