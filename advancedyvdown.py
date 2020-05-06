@@ -308,7 +308,7 @@ def start_audio_download(url):
                     logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
                     # adding unicode title from stream obj
                     addTitle(path_to_download.replace('m4a','mp3'),stream_obj.title)
-                    addPicture(path_to_download.replace('m4a','mp3'),pafy_obj.thumb)
+                    addPicture(path_to_download.replace('m4a','mp3'),pafy_obj)
                     notifyAboutTheService("Downloaded",slugify_audio_title.replace("m4a","mp3"))
                 except Exception as e:
                     notifyAboutTheService("Error Downloading",slugify_audio_title.replace("m4a","mp3"))
