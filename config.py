@@ -19,6 +19,10 @@ config['media_conf'] = {
 }
 
 def getConfigInstance():
+    """Return config parser object to the caller
+    Returns:
+        ConfigParser object -- the config object created earlier will be returned 
+    """    
     if not os.path.exists(os.path.join('.',CONFIG_FILE_NAME)):
         generateConfigFile()
         return config
@@ -27,11 +31,17 @@ def getConfigInstance():
         return config
 
 def generateConfigFile(confini = None):
+    """persisting configure file to disk
+    Keyword Arguments:
+        confini {config object} -- ConfigParser object to persist (default: {None})
+    """    
     if confini !=None:
         with open(CONFIG_FILE_NAME,'w') as configfile:
+            # wrting modified config object provided as argument
             confini.write(configfile)
     else:
         with open(CONFIG_FILE_NAME,'w') as configfile:
+            # no argument provided write the default object to file
             config.write(configfile)
 
 if __name__ == '__main__':
