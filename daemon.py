@@ -58,13 +58,23 @@ def task(task_queue,thread_name):
         except Exception as e:
             logging.debug("Error occured in daemon loop")
 
-daemonThread = Thread(target=getUrl,args=(task_queue,))
-daemonThread.start()
+# mainThread
+mainThread = Thread(target=getUrl,args=(task_queue,))
 
 worker_thread_list = []
-
 for i in range(NUMBER_OF_THREADS):
     t = Thread(target=task,args=(task_queue,f'Thread-{i}'))
     t.setDaemon(True)
-    t.start()
+    # t.start()
     worker_thread_list.append(t)
+
+def startTheServer():
+    #starting main thread
+    mainThread.start()
+    #starting worker threads
+    for t in worker_thread_list:
+        t.start()
+
+
+if __name__ == '__main__':
+    startTheServer()
