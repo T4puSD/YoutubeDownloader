@@ -1,7 +1,9 @@
 #excluding pycache
 __pycache__
-
+#excluding vscode config files
+.*
 #directory
+*/*
 downloads
 video_downloads
 temp
