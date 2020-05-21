@@ -5,7 +5,6 @@ import time
 import pyperclip
 from threading import Thread
 import queue
-from queue import Queue
 from configparser import ConfigParser
 from concurrent.futures import as_completed
 from config import generateConfigFile
@@ -28,9 +27,9 @@ MEDIA_TYPE = config['media_conf'].get('media_type')
 MEDIA_QUALITY = config['media_conf'].get('media_quality')
 DOWNLOAD_MODE = config['conf'].get('download_mode')
 NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
-print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
+# print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
 
-task_queue = Queue()
+task_queue = queue.Queue()
 
 class ClipBoardThread(StoppableThread):
     def __init__(self, queue, *args,**kwargs):
@@ -87,15 +86,38 @@ for i in range(NUMBER_OF_THREADS):
     worker_thread_list.append(t)
 
 def stopTheServers():
-    # stopping main thread
-    mainThread.stop()
-    # stopping worker threads
-    for worker in worker_thread_list:
-        worker.stop()
+    result = False
+    # checkin if main thread is alive
+    if mainThread.is_alive():
+        # stopping main thread
+        mainThread.stop()
+        result = True
 
-    for worker in worker_thread_list:
-        # Allow worker threads to shut down completely
-        worker.join()
+        work_is_pending = True
+        for worker in worker_thread_list:
+            if not worker.is_alive():
+                work_is_pending = False
+                
+        # checking if workers are alive
+        if work_is_pending:
+            # stopping worker threads
+            for worker in worker_thread_list:
+                worker.stop()
+
+            for worker in worker_thread_list:
+                # Allow worker threads to shut down completely
+                worker.join()
+    return result
+
+def resetTheThreads():
+    # task_queue = queue.Queue()
+    global mainThread
+    global worker_thread_list
+    mainThread = ClipBoardThread(task_queue)
+    worker_thread_list.clear()
+    for i in range(NUMBER_OF_THREADS):
+        t = WorkerThread(task_queue,f'Thread-{i}')
+        worker_thread_list.append(t)
 
 def sigint_handler(signum, frame):
     print ('\nShutting down...')
@@ -103,11 +125,23 @@ def sigint_handler(signum, frame):
     sys.exit(0)
 
 def startTheServers():
-    #starting main thread
-    mainThread.start()
-    #starting worker threads
-    for t in worker_thread_list:
-        t.start()
+    if mainThread.is_alive():
+        return True
+    
+    print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
+    if not mainThread.is_alive():
+        #starting main thread
+        mainThread.start()
+    
+    work_is_pending = True
+    for worker in worker_thread_list:
+        if not worker.is_alive():
+            work_is_pending = False
+    if not work_is_pending:
+        #starting worker threads
+        for t in worker_thread_list:
+            t.start()
+        return False
 
     # while not task_queue.empty():
     #     time.sleep(0.1)

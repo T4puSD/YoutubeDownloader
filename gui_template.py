@@ -1,10 +1,19 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'gui.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.2
+#
+# WARNING! All changes made in this file will be lost!
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(819, 725)
+        MainWindow.resize(527, 461)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -45,10 +54,10 @@ class Ui_MainWindow(object):
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.verticalLayout.addWidget(self.label_2)
-        spacerItem = QtWidgets.QSpacerItem(20, 200, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
         self.verticalLayout_3.addLayout(self.verticalLayout)
         self.verticalLayout_6.addWidget(self.frame_3)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem)
         self.frame_4 = QtWidgets.QFrame(self.left_frame)
         self.frame_4.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.frame_4.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -128,6 +137,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.frame)
         self.verticalLayout_5.addWidget(self.groupBoxMediaQuality)
         self.verticalLayout_6.addWidget(self.frame_4)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.startServerButton = QtWidgets.QPushButton(self.left_frame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -137,11 +148,22 @@ class Ui_MainWindow(object):
         self.startServerButton.setStyleSheet("color: rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.startServerButton.setObjectName("startServerButton")
-        self.verticalLayout_6.addWidget(self.startServerButton)
+        self.horizontalLayout_2.addWidget(self.startServerButton)
+        self.stopOrResetButton = QtWidgets.QPushButton(self.left_frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.stopOrResetButton.sizePolicy().hasHeightForWidth())
+        self.stopOrResetButton.setSizePolicy(sizePolicy)
+        self.stopOrResetButton.setStyleSheet("color: rgb(0, 0, 0);\n"
+"background-color: rgb(255, 255, 255);")
+        self.stopOrResetButton.setObjectName("stopOrResetButton")
+        self.horizontalLayout_2.addWidget(self.stopOrResetButton)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_2)
         self.gridLayout.addWidget(self.left_frame, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 819, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 527, 27))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -174,7 +196,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Youtube Downloader"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Youtube Downloader"))
         self.label_2.setText(_translate("MainWindow", "Download in Audio or Video"))
         self.groupBoxMediaType.setTitle(_translate("MainWindow", "Please choose which format do you want to download?"))
@@ -183,7 +205,8 @@ class Ui_MainWindow(object):
         self.groupBoxMediaQuality.setTitle(_translate("MainWindow", "Please choose the media quality"))
         self.radioButtonNormalQuality.setText(_translate("MainWindow", "Normal"))
         self.radioButtonHighQuality.setText(_translate("MainWindow", "High Quality"))
-        self.startServerButton.setText(_translate("MainWindow", "Start"))
+        self.startServerButton.setText(_translate("MainWindow", "Start Server"))
+        self.stopOrResetButton.setText(_translate("MainWindow", "Stop | Reset"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionStartServer.setText(_translate("MainWindow", "Start Server"))
