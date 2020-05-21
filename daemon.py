@@ -31,11 +31,33 @@ NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
 
 task_queue = queue.Queue()
 
+def reloadConfig():
+    global MEDIA_TYPE
+    global MEDIA_QUALITY
+    global DOWNLOAD_MODE
+    global NUMBER_OF_THREADS
+
+    if not os.path.exists(os.path.join('.','configure.ini')):
+        generateConfigFile()
+    if os.path.exists(os.path.join('.','configure.ini')):
+        config = ConfigParser()
+        config.read('configure.ini')
+    
+    MEDIA_TYPE = config['media_conf'].get('media_type')
+    MEDIA_QUALITY = config['media_conf'].get('media_quality')
+    DOWNLOAD_MODE = config['conf'].get('download_mode')
+    NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
+
+
 class ClipBoardThread(StoppableThread):
     def __init__(self, queue, *args,**kwargs):
         super().__init__(*args, **kwargs)
         self.queue = queue
     def run(self):
+        MEDIA_TYPE = config['media_conf'].get('media_type')
+        MEDIA_QUALITY = config['media_conf'].get('media_quality')
+        DOWNLOAD_MODE = config['conf'].get('download_mode')
+        NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
         prev_url = None
         while not self.stopped():
             current_url = pyperclip.paste()
@@ -52,7 +74,7 @@ class WorkerThread(StoppableThread):
     def run(self):
         while not self.stopped():
             try:
-                url = self.task_queue.get(timeout=5)
+                url = self.task_queue.get(timeout=1)
             except queue.Empty:
                 pass
             else:
@@ -125,10 +147,10 @@ def sigint_handler(signum, frame):
     sys.exit(0)
 
 def startTheServers():
+    print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
     if mainThread.is_alive():
         return True
     
-    print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
     if not mainThread.is_alive():
         #starting main thread
         mainThread.start()
