@@ -25,8 +25,8 @@ media_type = audio
 media_quality = normal
 ```
 #### Configure to download Video
-Edit `media_type` key from `audio` to `video` to configure the server to download video at **480p**
-Edit `media_quality` key from `normal` to `hq` to configure the server to download video at **1080p**
+Edit `media_type` key from `audio` to `video` to configure the server to download video at **480p**.
+Edit `media_quality` key from `normal` to `hq` to configure the server to download video at **1080p**.
 >***NOTE**: For `conf` section only keys are case sensitive. But both keys and values are case sensitive for `media_conf`. So use lowercase letters only.*
 #### Configure dowload location
 As of now download location is relative to the repository directory. So whatever you put on `download_dir_audio` or `download_dir_video` will be created within the repository.
@@ -39,18 +39,18 @@ There is two way you can download a single video first method is:
  2. Run `python advancedyvdown.py` it will fetch copied link from clipboard and start the download
 
 For the second method you follow step 1 from above and then give the copied link as the argument while  running the script as follows:
-`python advancedyvdown.py -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
+    `python advancedyvdown.py -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
 This command will start downloading that video file in **mp3** format.
 
 To download as **mp4** at **480p** file format use the `-v` option. Example:
-`python advancedyvdown.py -v -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
+    `python advancedyvdown.py -v -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
 
 To download as **mp4** at **1080p** file format use both `-v` and `-hq` option. Example:
-`python advancedyvdown.py -v -hq -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
+    `python advancedyvdown.py -v -hq -l https://www.youtube.com/watch?v=gUQDq9ezuJQ`
 >***NOTE**: If you don't provide `-l https://www.youtube.com/watch?v=gUQDq9ezuJQ` this argument the scipt will try to find link in the clipboard and if it doesn't find any youtube link scipt will just exit.*
 
 For any help with the terminal use `python advancedyvdown.py -h` as an argument. This will generate this text:
-```shell
+```sh
 usage: advancedyvdown.py [-h] [-l LINK] [-v] [-hq]
 
 Download youtube files either in video or in audio format. By default audio will be
