@@ -11,7 +11,7 @@ Download audio or video from YouTube.
  7. youtube-dl==2020.3.24
  8. mutagen==1.44.0
  9. pyqt5==5.14.2
- 10. win10toast=0.9
+ 10. win10toast==0.9
 
  >***NOTE:** ffmpeg needed to be installed explicitly and also in the PATH variable! Click on ffmpeg to go to the official download site.*
 
