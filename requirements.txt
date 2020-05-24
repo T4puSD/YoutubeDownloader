@@ -3,5 +3,6 @@ notify2==0.3.1
 pafy==0.5.5
 pyperclip==1.8.0
 requests==2.23.0
-youtube-dl==2020.3.24
+youtube-dl==2020.5.8
 mutagen==1.44.0
+pyqt5==5.14.2
