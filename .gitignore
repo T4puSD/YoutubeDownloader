@@ -12,6 +12,7 @@ temp
 *.mp3
 *.mp4
 *.bak
+*.exe
 
 #configfile
 *.ini
