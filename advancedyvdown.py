@@ -317,6 +317,7 @@ def start_audio_download(url):
 
                 try:
                     # subprocess.run(['rm',path_to_download])
+                    logging.debug("Removing downloaded .m4a file")
                     os.remove(path_to_download)
                 except Exception as e:
                     logging.debug("Errore removing actual file")

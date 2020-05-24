@@ -1,6 +1,19 @@
 # YoutubeDownloader
 Download audio or video from YouTube.
 
+## Dependencies
+ 1. [ffmpeg](https://www.ffmpeg.org/download.html)
+ 2. bs4==0.0.1
+ 3. notify2==0.3.1
+ 4. pafy==0.5.5
+ 5. pyperclip==1.8.0
+ 6. requests==2.23.0
+ 7. youtube-dl==2020.3.24
+ 8. mutagen==1.44.0
+ 9. pyqt5==5.14.2
+
+ >***NOTE:** ffmpeg needed to be installed explicitly and also in the PATH variable! Click on ffmpeg to go to the official download site.*
+
 ## How to use CLI version
 Every command follows this pattern:
 `python [scriptname.py] [options] [parameter if needed]`
