@@ -7,8 +7,9 @@ from threading import Thread
 import queue
 from configparser import ConfigParser
 from concurrent.futures import as_completed
-from config import initConfigFile
+from config import initConfigInstance
 from debugger import logging
+from advancedyvdown import reloadDownloadDirs
 from advancedyvdown import start_audio_download
 from advancedyvdown import start_video_download
 from advancedyvdown import start_high_quality_video_download
@@ -16,7 +17,7 @@ from stoppableThread import StoppableThread
 
 # genererating configure.ini file at first to
 # load basic config files
-config = initConfigFile()
+config = initConfigInstance()
 
 MEDIA_TYPE = config['media_conf'].get('media_type')
 MEDIA_QUALITY = config['media_conf'].get('media_quality')
@@ -27,16 +28,15 @@ NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
 task_queue = queue.Queue()
 
 def reloadConfig():
+    # relaoding download dirctories
+    # in advancedyvdonw.py script
+    reloadDownloadDirs()
     global MEDIA_TYPE
     global MEDIA_QUALITY
     global DOWNLOAD_MODE
     global NUMBER_OF_THREADS
 
-    if not os.path.exists(os.path.join('.','configure.ini')):
-        generateConfigFile()
-    if os.path.exists(os.path.join('.','configure.ini')):
-        config = ConfigParser()
-        config.read('configure.ini')
+    config = initConfigInstance()
     
     MEDIA_TYPE = config['media_conf'].get('media_type')
     MEDIA_QUALITY = config['media_conf'].get('media_quality')

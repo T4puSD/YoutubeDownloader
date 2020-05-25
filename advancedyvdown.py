@@ -9,7 +9,7 @@ import argparse
 # import logging
 from debugger import logging
 from configparser import ConfigParser
-from config import initConfigFile
+from config import initConfigInstance
 from title_slugify import TitleSlugify
 from notifier import notifyAboutTheService
 from metaDataEditor import addTitle, addPicture
@@ -17,7 +17,7 @@ from metaDataEditor import addTitle, addPicture
 
 # genererating configure.json file at first to
 # load basic config files
-config = initConfigFile()
+config = initConfigInstance()
 # Static Variables
 # * is used to unpack from list
 DOWN_DIR_AUDIO=config['conf'].get('download_dir_audio')
@@ -28,6 +28,15 @@ TEMP_DIR = config['conf'].get('temp_dir')
 # TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
+
+def reloadDownloadDirs():
+    global DOWN_DIR_AUDIO
+    global DOWN_DIR_VIDEO
+
+    config = initConfigInstance()
+
+    DOWN_DIR_AUDIO = config['conf'].get('download_dir_audio')
+    DOWN_DIR_VIDEO = config['conf'].get('download_dir_video')
 
 def get_pafy_stream_obj(url,format=None,only_video=False):
     """This function return stream object from pafy
