@@ -143,7 +143,7 @@ def sigint_handler(signum, frame):
     sys.exit(0)
 
 def startTheServers():
-    print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
+    logging.debug("Starting Daemon Server! Modes: {} {} {}".format(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE))
     if mainThread.is_alive():
         return True
     
