@@ -9,7 +9,7 @@ import argparse
 # import logging
 from debugger import logging
 from configparser import ConfigParser
-from config import generateConfigFile
+from config import initConfigFile
 from title_slugify import TitleSlugify
 from notifier import notifyAboutTheService
 from metaDataEditor import addTitle, addPicture
@@ -17,17 +17,15 @@ from metaDataEditor import addTitle, addPicture
 
 # genererating configure.json file at first to
 # load basic config files
-if not os.path.exists(os.path.join('.','configure.ini')):
-    generateConfigFile()
-if os.path.exists(os.path.join('.','configure.ini')):
-    config = ConfigParser()
-    config.read('configure.ini')
-
+config = initConfigFile()
 # Static Variables
 # * is used to unpack from list
-DOWN_DIR_AUDIO=os.path.join(*config['conf'].get('download_dir_audio').split(',')) # downloads
-DOWN_DIR_VIDEO=os.path.join(*config['conf'].get('download_dir_video').split(','))
-TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
+DOWN_DIR_AUDIO=config['conf'].get('download_dir_audio')
+DOWN_DIR_VIDEO=config['conf'].get('download_dir_video')
+TEMP_DIR = config['conf'].get('temp_dir')
+# DOWN_DIR_AUDIO=os.path.join(*config['conf'].get('download_dir_audio').split(',')) # downloads
+# DOWN_DIR_VIDEO=os.path.join(*config['conf'].get('download_dir_video').split(','))
+# TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 

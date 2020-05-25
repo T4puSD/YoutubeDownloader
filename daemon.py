@@ -7,7 +7,7 @@ from threading import Thread
 import queue
 from configparser import ConfigParser
 from concurrent.futures import as_completed
-from config import generateConfigFile
+from config import initConfigFile
 from debugger import logging
 from advancedyvdown import start_audio_download
 from advancedyvdown import start_video_download
@@ -16,12 +16,7 @@ from stoppableThread import StoppableThread
 
 # genererating configure.ini file at first to
 # load basic config files
-if not os.path.exists(os.path.join('.','configure.ini')):
-    generateConfigFile()
-if os.path.exists(os.path.join('.','configure.ini')):
-    config = ConfigParser()
-    config.read('configure.ini')
-
+config = initConfigFile()
 
 MEDIA_TYPE = config['media_conf'].get('media_type')
 MEDIA_QUALITY = config['media_conf'].get('media_quality')
@@ -82,7 +77,7 @@ class WorkerThread(StoppableThread):
                     if(MEDIA_TYPE == 'audio'):
                         start_audio_download(url)
                         task_queue.task_done()
-                        logging.debug(thread_name+ " Completed")
+                        logging.debug(self.thread_name+ " Completed")
                     elif(MEDIA_TYPE == 'video'):
                         if(MEDIA_QUALITY == 'normal'):
                             start_video_download(url)
@@ -96,6 +91,7 @@ class WorkerThread(StoppableThread):
                         logging.debug("No pending task in the queue")
                 except Exception as e:
                     logging.debug("Error occured in daemon loop")
+                    logging.debug(e)
 
 # mainThread
 mainThread = ClipBoardThread(task_queue)
@@ -142,7 +138,7 @@ def resetTheThreads():
         worker_thread_list.append(t)
 
 def sigint_handler(signum, frame):
-    print ('\nShutting down...')
+    logging.debug('Shutting Threads down...')
     stopTheServers()
     sys.exit(0)
 
