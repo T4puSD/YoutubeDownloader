@@ -10,24 +10,6 @@ HOME = pathlib.Path('.').absolute().home()
 USER_DOWNLOAD_FOLDER = os.path.join(HOME,"Downloads")
 DEFAULT_DOWNLOAD_FOLDER = os.path.join(USER_DOWNLOAD_FOLDER,"YoutubeMusic")
 
-# config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
-# DOWNLOAD_DIR_AUDIO = os.path.join(DEFAULT_DOWNLOAD_FOLDER,"Audio")
-# DOWNLOAD_DIR_VIDEO = os.path.join(DEFAULT_DOWNLOAD_FOLDER,"Video")
-
-# config['conf'] = {
-#     'download_dir': DEFAULT_DOWNLOAD_FOLDER,
-#     'download_dir_audio':DOWNLOAD_DIR_AUDIO,
-#     'download_dir_video':DOWNLOAD_DIR_VIDEO,
-#     'temp_dir':'temp',
-#     'log_file':'log.txt',
-#     'download_mode':'single',
-#     'number_of_threads':'2'
-# }
-
-# config['media_conf'] = {
-#     'media_type':'audio',
-#     'media_quality':'normal'
-# }
 
 def constructConfig(DEFAULT_DOWNLOAD_FOLDER):
     DOWNLOAD_DIR_AUDIO = os.path.join(DEFAULT_DOWNLOAD_FOLDER,"Audio")
@@ -50,17 +32,6 @@ def constructConfig(DEFAULT_DOWNLOAD_FOLDER):
     }
     return config
 
-
-# def initConfigFile():
-#     # genererating configure.ini file at first to
-#     # load basic config files
-#     config = None
-#     if not os.path.exists(os.path.join('.','configure.ini')):
-#         generateConfigFile(constructConfig(DEFAULT_DOWNLOAD_FOLDER))
-#     if os.path.exists(os.path.join('.','configure.ini')):
-#         config = ConfigParser()
-#         config.read('configure.ini')
-#     return config
 
 def initConfigInstance():
     """Return config parser object to the caller
