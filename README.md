@@ -38,7 +38,7 @@ media_quality = normal
 ```
 
 #### Configure to download Video
-Edit `media_type` key from `audio` to `video` to configure the server to download video at **480p**.
+Edit `media_type` key from `audio` to `video` to configure the server to download video at **480p**.\
 Edit `media_quality` key from `normal` to `hq` to configure the server to download video at **1080p**.
 
 >***NOTE**: For `conf` section only keys are case sensitive. But both keys and values are case sensitive for `media_conf`. So use lowercase letters only.*
