@@ -25,8 +25,9 @@ It will generate this following configure.ini file. **By default** the configure
 
 ```ini
 [conf]
-download_dir_audio = testdownloads3
-download_dir_video = testdownloads3,video
+download_dir = testdownloads3
+download_dir_audio = testdownloads3/audio
+download_dir_video = testdownloads3/video
 temp_dir = temp
 log_file = log.txt
 download_mode = single
@@ -44,9 +45,9 @@ Edit `media_quality` key from `normal` to `hq` to configure the server to downlo
 >***NOTE**: For `conf` section only keys are case sensitive. But both keys and values are case sensitive for `media_conf`. So use lowercase letters only.*
 
 #### Configure dowload location
-As of now download location is relative to the repository directory. So whatever you put on `download_dir_audio` or `download_dir_video` will be created within the repository.
->***NOTE:** To define a subdirectory as a download location use `,` as a seperating delimiter.*
->For example `download_dir_video` key's value `testdowlnoads3,video` means **video** folder inside **testdownoads3** directory.
+If you don't provide the full path to a directory the download location will be relative to the repository directory. So whatever partial path you put on `download_dir_audio` or `download_dir_video` will be created within the repository.
+>***NOTE:** To define a subdirectory as a download location use `/` as a seperating delimiter.*
+>For example `download_dir_video` key's value `testdowlnoads3/video` means **video** folder inside **testdownoads3** directory.
 
 ### Single Download
 There is two way you can download a single video, first method is:
