@@ -28,11 +28,12 @@ class YoutubeDownloader(QMainWindow,Ui_MainWindow):
 
     def getDirectory(self):
         file = QFileDialog.getExistingDirectory(self,'Choose Download Directory',self.getDownloadLocationConfig()[0])
-        self.lineEditDownloadDirectoryShow.setText(file)
-        config = constructConfig(file)
-        # print(config['conf'].get('download_dir'))
-        generateConfigFile(config)
-        logging.debug("Changed download directory to: "+file)
+        if file:
+            self.lineEditDownloadDirectoryShow.setText(file)
+            config = constructConfig(file)
+            # print(config['conf'].get('download_dir'))
+            generateConfigFile(config)
+            logging.debug("Changed download directory to: {}".format(file))
     
     def generateMediaConfig(self):
         configurations = self.getMediaConfig()
