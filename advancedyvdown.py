@@ -99,18 +99,18 @@ def start_high_quality_video_download(url):
     # those temporary files will be deleted once combine operatoin is successfull
     if not os.path.exists(TEMP_DIR):
         try:
-            logging.debug("Making {} Directory".format(TEMP_DIR))
+            logging.debug("Making Directory: {}".format(TEMP_DIR))
             os.makedirs(TEMP_DIR)
         except Exception as e:
-            logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
+            logging.debug("Error occured in making Directory: {}".format(TEMP_DIR))
             logging.debug(e)
 
     if not os.path.exists(DOWN_DIR_VIDEO):
         try:
-            logging.debug("Making {} Directory".format(DOWN_DIR_VIDEO))
+            logging.debug("Making Directory: {}".format(DOWN_DIR_VIDEO))
             os.makedirs(DOWN_DIR_VIDEO)
         except Exception as e:
-            logging.debug("Error occured in making Directory {}".format(DOWN_DIR_VIDEO))
+            logging.debug("Error occured in making Directory: {}".format(DOWN_DIR_VIDEO))
             logging.debug(e)
 
 
@@ -234,11 +234,11 @@ def start_video_download(url):
             try:
                 if not os.path.exists(DOWN_DIR_VIDEO):
                     try:
-                        logging.debug("Making {} Directory".format(DOWN_DIR_VIDEO))
+                        logging.debug("Making Directory: {}".format(DOWN_DIR_VIDEO))
                         os.makedirs(DOWN_DIR_VIDEO)
                         # os.mkdir(DOWN_DIR_VIDEO)
                     except Exception as e:
-                        logging.debug("Error occured in making Directory {}".format(TEMP_DIR))
+                        logging.debug("Error occured in making Directory: {}".format(TEMP_DIR))
                         logging.debug(e)
                 logging.debug("Downloading Video: "+TitleSlugify().slugify_for_windows(stream_obj.title))
                 logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
@@ -295,11 +295,11 @@ def start_audio_download(url):
             try:
                 if not os.path.exists(DOWN_DIR_AUDIO):
                     try:
-                        logging.debug("Making {} Directory".format(DOWN_DIR_AUDIO))
+                        logging.debug("Making Directory: {}".format(DOWN_DIR_AUDIO))
                         os.makedirs(DOWN_DIR_AUDIO)
                         # os.mkdir(DOWN_DIR_AUDIO)
                     except Exception as e:
-                        logging.debug("Error occured in making Directory {}".format(DOWN_DIR_AUDIO))
+                        logging.debug("Error occured in making Directory: {}".format(DOWN_DIR_AUDIO))
                         logging.debug(e)
 
                 logging.debug("Downloading Audio: "+TitleSlugify().slugify_for_windows(stream_obj.title))
