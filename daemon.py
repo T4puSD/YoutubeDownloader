@@ -53,7 +53,7 @@ class ClipBoardThread(StoppableThread):
         MEDIA_QUALITY = config['media_conf'].get('media_quality')
         DOWNLOAD_MODE = config['conf'].get('download_mode')
         NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
-        prev_url = None
+        prev_url = pyperclip.paste()
         while not self.stopped():
             current_url = pyperclip.paste()
             if(prev_url != current_url):
@@ -99,7 +99,7 @@ mainThread = ClipBoardThread(task_queue)
 worker_thread_list = []
 for i in range(NUMBER_OF_THREADS):
     t = WorkerThread(task_queue,f'Thread-{i}')
-    # t.setDaemon(True)
+    t.setDaemon(True)
     # t.start()
     worker_thread_list.append(t)
 
@@ -122,9 +122,9 @@ def stopTheServers():
             for worker in worker_thread_list:
                 worker.stop()
 
-            for worker in worker_thread_list:
-                # Allow worker threads to shut down completely
-                worker.join()
+            # for worker in worker_thread_list:
+            #     # Allow worker threads to shut down completely
+            #     worker.join()
     return result
 
 def resetTheThreads():
