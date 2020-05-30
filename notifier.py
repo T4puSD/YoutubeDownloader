@@ -1,24 +1,17 @@
 import platform
-import threading
-def winToast(summary,message):
-    # This module will only be imported when
-    # the program will be exuted from windwos
-    # as windwos dbus and linux's not same
-    from win10toast import ToastNotifier
-    toaster = ToastNotifier()
-    toaster.show_toast(summary,message,duration=3)
+import time
 
 def notifyAboutTheService(summary,message):
     if platform.system() == 'Linux':
-        import notify2        
+        import notify2
         notify2.init("YoutubeDownloader")
         n  =notify2.Notification(summary,message)
         n.set_urgency(notify2.URGENCY_NORMAL)
         n.set_timeout(5000)
         n.show()
     if platform.system() == 'Windows':
-        # win10toast module's native threaded argument is daemonthread
-        # and it can't handle multiple notification at the same time and throws error
-        t = threading.Thread(target=winToast,args=(summary,message))
-        t.start()
-        t.join()
+        from win10toast import ToastNotifier
+        toaster = ToastNotifier()
+        toaster.show_toast(summary,message,duration=3,threaded=True)
+        while toaster.notification_active():
+            time.sleep(0.1)
