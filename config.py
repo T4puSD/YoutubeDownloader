@@ -5,7 +5,7 @@ from configparser import ConfigParser
 CONFIG_FILE_NAME = 'configure.ini'
 # config = ConfigParser()
 
-HOME = pathlib.Path('.').absolute().home()
+HOME = pathlib.Path.home()
 # hard coding the default download folder
 USER_DOWNLOAD_FOLDER = os.path.join(HOME,"Downloads")
 DEFAULT_DOWNLOAD_FOLDER = os.path.join(USER_DOWNLOAD_FOLDER,"YoutubeMusic")
