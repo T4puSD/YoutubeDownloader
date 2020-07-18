@@ -1,5 +1,6 @@
 import os
 import sys
+import pathlib
 import pafy # need to download this package explicitly
 import pyperclip # need to download this package explicitly
 import subprocess
@@ -28,6 +29,7 @@ TEMP_DIR = config['conf'].get('temp_dir')
 # TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
+FFMPEG_LOCATION = 'lib' + os.sep + 'ffmpeg.exe'
 
 def reloadDownloadDirs():
     global DOWN_DIR_AUDIO
@@ -172,7 +174,7 @@ def start_high_quality_video_download(url):
 
 
                 # combining both video and audio
-                cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',temp_path_to_download_video,'-i',temp_path_to_download_audio,'-c','copy','-strict','experimental',output_path]
+                cmd = [str(FFMPEG_LOCATION),FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',temp_path_to_download_video,'-i',temp_path_to_download_audio,'-c','copy','-strict','experimental',output_path]
 
                 # running command with subprocess
                 try:
@@ -309,7 +311,7 @@ def start_audio_download(url):
                 logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_AUDIO))
 
                 #converting to mp3
-                cmd = ['ffmpeg',FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',path_to_download,'-vn','-ab','128k','-ar','44100','-y',os.path.join(DOWN_DIR_AUDIO,slugify_audio_title.replace('.m4a','.mp3'))]
+                cmd = [str(FFMPEG_LOCATION),FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',path_to_download,'-vn','-ab','128k','-ar','44100','-y',os.path.join(DOWN_DIR_AUDIO,slugify_audio_title.replace('.m4a','.mp3'))]
                 # logging.debug(" ".join(cmd))
                 try:
                     subprocess.run(cmd)
@@ -325,6 +327,7 @@ def start_audio_download(url):
 
                 try:
                     # subprocess.run(['rm',path_to_download])
+                    logging.debug("Removing m4a file")
                     os.remove(path_to_download)
                 except Exception as e:
                     logging.debug("Errore removing actual file")
