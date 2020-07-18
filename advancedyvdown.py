@@ -29,7 +29,7 @@ TEMP_DIR = config['conf'].get('temp_dir')
 # TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
-FFMPEG_LOCATION = 'lib' + os.sep + 'ffmpeg.exe'
+FFMPEG_LOCATION = 'plugins' + os.sep + 'ffmpeg.exe'
 
 def reloadDownloadDirs():
     global DOWN_DIR_AUDIO
