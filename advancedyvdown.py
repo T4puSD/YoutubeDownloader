@@ -269,6 +269,7 @@ def start_audio_download(url):
         # gives OSError and breaks the loop
     timeout = 5
     stream_obj = None
+    pafy_obj = None
     while(stream_obj == None and timeout >0):
         try:
             pafy_obj = get_pafy_stream_obj(url)
@@ -335,7 +336,7 @@ def start_audio_download(url):
         else:
             logging.debug("File Already Exists! Path: "+path_to_download)
     else:
-        logging.debug("Unable to find the audio file at this time. Timeout!! Try again later.")
+        logging.debug("Unable to find the audio file at this time. Timeout!! Try again later or Try updating 'youtube-dl'dependency.")
 
 
 # this code will only run if it is executed directly
