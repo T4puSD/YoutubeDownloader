@@ -82,7 +82,7 @@ class WorkerThread(StoppableThread):
                         if(MEDIA_QUALITY == 'normal'):
                             start_video_download(url)
                             task_queue.task_done()
-                            logging.debug(thread_name+ " Completed")
+                            logging.debug(self.thread_name+ " Completed")
                         elif(MEDIA_QUALITY == 'hq'):
                             start_high_quality_video_download(url)
                             task_queue.task_done()
