@@ -115,7 +115,8 @@ class YoutubeDownloader(QMainWindow,Ui_MainWindow):
         logging.debug("Closing GUI")
         event.accept()
 
-app = QApplication(sys.argv)
-form = YoutubeDownloader()
-form.show()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    form = YoutubeDownloader()
+    form.show()
+    sys.exit(app.exec_())
