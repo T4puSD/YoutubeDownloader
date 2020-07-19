@@ -1,6 +1,6 @@
+from logging import log
 import os
 import sys
-import pathlib
 import pafy # need to download this package explicitly
 import pyperclip # need to download this package explicitly
 import subprocess
@@ -180,7 +180,7 @@ def start_high_quality_video_download(url):
                 try:
                     logging.debug("Combining HQ Audio and Video: "+TitleSlugify().slugify_for_windows(audio.title))
                     logging.debug("Saving to: "+os.path.abspath(DOWN_DIR_VIDEO))
-                    subprocess.run(cmd)
+                    subprocess.run(cmd,shell=True)
                     logging.debug("DOWNLOADED=> "+slugify_video_title)
                     notifyAboutTheService("Downloaded",slugify_video_title)
 
@@ -314,7 +314,8 @@ def start_audio_download(url):
                 cmd = [str(FFMPEG_LOCATION),FFMPEG_LOG,FFMPEG_LOG_LEVEL,'-i',path_to_download,'-vn','-ab','128k','-ar','44100','-y',os.path.join(DOWN_DIR_AUDIO,slugify_audio_title.replace('.m4a','.mp3'))]
                 # logging.debug(" ".join(cmd))
                 try:
-                    subprocess.run(cmd)
+                    logging.debug("Converting m4a to mp3")
+                    subprocess.run(cmd,shell=True)
                     logging.debug("DOWNLOADED=> "+slugify_audio_title.replace("m4a","mp3"))
                     # adding unicode title from stream obj
                     addTitle(path_to_download.replace('m4a','mp3'),stream_obj.title)
