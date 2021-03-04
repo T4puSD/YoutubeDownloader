@@ -1,6 +1,9 @@
 # YoutubeDownloader
 Download audio or video from YouTube.
 
+## How to configure the python environement
+To ensure every dependency of for this project is installed in ur local system. First go to the downloaded directory where this repo is located and run `pip3 install -r requirements.txt` command in the console. This will install every dependency needed for the project.
+
 ## How to use CLI version
 Every command follows this pattern:
 `python [scriptname.py] [options] [parameter if needed]`
