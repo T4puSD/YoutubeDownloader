@@ -14,6 +14,7 @@ from config import initConfigInstance
 from title_slugify import TitleSlugify
 from notifier import notifyAboutTheService
 from metaDataEditor import addTitle, addPicture
+from ffmpeg_path import FfmpegPath
 
 
 # genererating configure.json file at first to
@@ -29,8 +30,7 @@ TEMP_DIR = config['conf'].get('temp_dir')
 # TEMP_DIR = os.path.join(*config['conf'].get('temp_dir').split(','))
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
-FFMPEG_LOCATION = 'plugins' + os.sep + 'ffmpeg.exe'
-
+FFMPEG_LOCATION = FfmpegPath.getFFmpegExecutablePath() 
 def reloadDownloadDirs():
     global DOWN_DIR_AUDIO
     global DOWN_DIR_VIDEO
