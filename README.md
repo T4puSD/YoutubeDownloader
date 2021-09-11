@@ -5,6 +5,16 @@ Download audio or video from YouTube.
 To ensure every dependency of for this project is installed in ur local system. First go to the downloaded directory where this repo is located and run `pip3 install -r requirements.txt` command in the console. This will install every dependency needed for the project.
 
 ## How to use CLI version
+### Step-1: Exporting the project module in pythonpath 
+export the module path to the python environment variables.   
+There are two-way of doing so. 
+1. A temporary solution is to export the path temporary to a terminal session with this command
+```cmd
+export PYTHONPATH=/home/tapusd/Documents/YoutubeDownloader:${PYTHONPATH}
+```
+
+2. Another way to permanent add the path to the system profile. In my case I had to add this exact line of code in my `.zshrc` file
+
 Every command follows this pattern:
 `python [scriptname.py] [options] [parameter if needed]`
 

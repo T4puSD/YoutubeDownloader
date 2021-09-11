@@ -171,7 +171,10 @@ def startTheServers():
     # mainThread.stop()
     # print("main thread is stopped")
 
-
-if __name__ == '__main__':
+def main():
     signal.signal(signal.SIGINT, sigint_handler)
     startTheServers()
+
+
+if __name__ == '__main__':
+    main()
