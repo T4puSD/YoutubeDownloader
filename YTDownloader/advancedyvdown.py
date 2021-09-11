@@ -33,7 +33,7 @@ def reloadDownloadDirs():
     global DOWN_DIR_AUDIO
     global DOWN_DIR_VIDEO
 
-    config = initConfigInstance()
+    config = get_configuration()
 
     DOWN_DIR_AUDIO = config['conf'].get('download_dir_audio')
     DOWN_DIR_VIDEO = config['conf'].get('download_dir_video')
