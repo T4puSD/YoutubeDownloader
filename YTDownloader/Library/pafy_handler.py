@@ -9,7 +9,7 @@ class FormatType(enum.Enum):
     VIDEO = 2
 
 
-def get_pafy_stream_obj(url, format_type=None, only_video=False):
+def _get_pafy_stream_obj(url, format_type=None, only_video=False):
     try:
         obj = pafy.new(url)
         # returning only the pafy obj if format is not given
@@ -60,7 +60,7 @@ def get_pafy_obj(url, file_format_type=None, only_video=False):
     pafy_obj = None
     while pafy_obj is None and timeout > 0:
         try:
-            pafy_obj = get_pafy_stream_obj(url, file_format_type, only_video)
+            pafy_obj = _get_pafy_stream_obj(url, file_format_type, only_video)
             time.sleep(1)
             timeout -= 1
         except OSError:
