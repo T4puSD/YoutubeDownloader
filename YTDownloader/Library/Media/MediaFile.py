@@ -42,3 +42,10 @@ class _MediaFile:
 
     def get_thumbnail(self) -> str:
         return self._thumbnail
+
+    def start_download(self, absolute_path: str):
+        pafy_stream = self.get_pafy_stream()
+        if pafy_stream is None:
+            raise NotFoundException("Unable to find pafy stream for download")
+
+        pafy_stream.download(absolute_path)
