@@ -1,4 +1,5 @@
 from pafy.backend_shared import BasePafy
+from pafy.backend_youtube_dl import YtdlStream
 
 from YTDownloader.Exceptions.general_exception import NotFoundException
 from YTDownloader.Model.MediaFile import MediaFile
@@ -23,7 +24,7 @@ class VideoFile(MediaFile):
         super().__init__(pafy_obj)
         self._video_obj = _get_video_pafy_obj(pafy_obj)
 
-    def get_pafy_stream(self):
+    def get_pafy_stream(self) -> YtdlStream:
         return self._video_obj
 
     def get_media_type_extension(self) -> str:

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from pafy.backend_shared import BasePafy
+from pafy.backend_youtube_dl import YtdlStream
 
 from YTDownloader.Exceptions.general_exception import NotFoundException, IllegalArgumentException
 from YTDownloader.Library.title_slugify import TitleSlugify
@@ -15,7 +16,7 @@ class MediaFile(ABC):
         self._thumbnail = pafy_obj.thumb
         self._title_slugify = TitleSlugify()
 
-    def get_pafy_stream(self):
+    def get_pafy_stream(self) -> YtdlStream:
         pass
 
     def get_media_type_extension(self) -> str:
