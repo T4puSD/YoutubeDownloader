@@ -1,8 +1,12 @@
+import os
+
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
-from YTDownloader.Exceptions.general_exception import IllegalArgumentException, NotFoundException
+from YTDownloader.Exceptions.general_exception import NotFoundException
 from YTDownloader.Library.Media.MediaFile import _MediaFile
+from YTDownloader.Library.Media.MetaDataEditor import add_title, add_picture
+from YTDownloader.Library.Converter import convert_to_audio
 
 
 class AudioFile(_MediaFile):
@@ -16,12 +20,20 @@ class AudioFile(_MediaFile):
     def get_media_type_extension(self) -> str:
         return "mp3"
 
-    def start_download(self, absolute_path: str) -> None:
-        if absolute_path is None:
-            raise IllegalArgumentException("absolute_path can not be None")
+    def get_download_dir(self) -> str:
+        return self.get_config().get_download_dir_audio
 
+    def start_download(self) -> None:
         pafy_stream = self.get_pafy_stream()
         if pafy_stream is None:
             raise NotFoundException("Unable to find pafy stream for download")
 
-        pafy_stream.download(absolute_path)
+        # Download
+        pafy_stream.download(self.get_download_path())
+        # Convert
+        convert_to_audio(self.get_download_path(), self.get_conversion_output_path())
+        # Remove m4a file
+        os.remove(self.get_download_path())
+        # Add MetaData
+        add_title(self.get_conversion_output_path(), self._title)
+        add_picture(self.get_conversion_output_path(), self.get_thumbnail())

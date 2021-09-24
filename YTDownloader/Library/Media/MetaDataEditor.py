@@ -5,13 +5,13 @@ from mutagen.id3 import ID3, APIC, TIT2, error
 from YTDownloader.Configuration.debugger import logging
 
 
-def add_picture(audio_path, pafy_obj):
+def add_picture(audio_path, picture_url):
     """Add picture to the audio file provided with audio_path arguments
     Picture url will get retrieved from the pafy object
 
     Arguments:
         audio_path {String} -- Path to the audio file to work with
-        pafy_obj {Object} -- The pafy object of the current audio file
+        picture_url {String} -- Thumbnail url
     Return:
         Doesn't return a value if operations are successful but if it fail to fetch any image url
         it return None and no operation is done with the audio file
@@ -19,31 +19,17 @@ def add_picture(audio_path, pafy_obj):
     if os.path.exists(audio_path) \
             and os.path.isfile(audio_path) \
             and audio_path.endswith('mp3'):
-        if pafy_obj is not None:
+        if picture_url is not None:
             audio = MP3(audio_path, ID3=ID3)
 
             # Download the cover image
             try:
-                picture_url = None
-                if pafy_obj.bigthumbhd is not None:
-                    picture_url = pafy_obj.bigthumbhd
-                    logging.debug("BigThumbHd")
-                elif pafy_obj.bigthumb is not None:
-                    picture_url = pafy_obj.bigthumb
-                    logging.debug("BigThumb")
-                elif pafy_obj.thumb is not None:
-                    picture_url = pafy_obj.thumb
-                    logging.debug("Thumb")
-                else:
-                    logging.debug("No thumbnail available for the video")
-                    return
-
-                img = requests.get(picture_url)
-                # extracting byte data from img response obj
-                img = img.content
+                response = requests.get(picture_url)
+                img = response.content
             except Exception as e:
                 logging.debug("Error downloading cover art")
                 logging.debug(e)
+                return
 
             # try adding id3 tags if not exists
             try:

@@ -30,7 +30,10 @@ class VideoFile(_MediaFile):
     def get_media_type_extension(self) -> str:
         return "mp4"
 
-    def start_download(self, absolute_path: str) -> None:
+    def get_download_dir(self) -> str:
+        return self.get_config().get_download_dir_video
+
+    def start_download(self) -> None:
         """Implement the method to handle video downloading"""
         pass
 

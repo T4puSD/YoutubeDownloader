@@ -1,8 +1,12 @@
+import os
+
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
 from YTDownloader.Exceptions.general_exception import NotFoundException, IllegalArgumentException
 from YTDownloader.Library.title_slugify import TitleSlugify
+from YTDownloader.Configuration.config import Config
+from YTDownloader.Configuration.configuration import get_configuration
 
 
 class _MediaFile:
@@ -13,6 +17,7 @@ class _MediaFile:
         self._author = pafy_obj.author
         self._thumbnail = pafy_obj.thumb
         self._title_slugify = TitleSlugify()
+        self._config = get_configuration()
 
     def get_pafy_stream(self) -> YtdlStream:
         raise NotImplementedError("Please use a child class")
@@ -20,8 +25,17 @@ class _MediaFile:
     def get_media_type_extension(self) -> str:
         raise NotImplementedError("Please use a child class")
 
-    def start_download(self, absolute_path: str) -> None:
+    def start_download(self) -> None:
         raise NotImplementedError("Please use a child class")
+
+    def get_download_dir(self) -> str:
+        raise NotImplementedError("Please use a child class")
+
+    def get_config(self) -> Config:
+        if self._config is None:
+            raise IllegalArgumentException("Config object can not be None")
+
+        return self._config
 
     @property
     def get_author(self) -> str:
@@ -45,3 +59,9 @@ class _MediaFile:
 
     def get_thumbnail(self) -> str:
         return self._thumbnail
+
+    def get_download_path(self) -> str:
+        return self.get_download_dir() + os.sep + self.get_original_title()
+
+    def get_conversion_output_path(self) -> str:
+        return self.get_download_dir() + os.sep + self.get_converted_title()

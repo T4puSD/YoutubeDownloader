@@ -1,66 +1,46 @@
-import os
-import pathlib
 from configparser import ConfigParser
-
-CONFIG_FILE_NAME = '../../configure.ini'
-# Configuration = ConfigParser()
-
-HOME = pathlib.Path.home()
-# hard coding the default download folder
-USER_DOWNLOAD_FOLDER = os.path.join(HOME,"Downloads")
-DEFAULT_DOWNLOAD_FOLDER = os.path.join(USER_DOWNLOAD_FOLDER,"YoutubeMusic")
+from YTDownloader.Exceptions.general_exception import IllegalArgumentException
 
 
-def constructConfig(DEFAULT_DOWNLOAD_FOLDER):
-    DOWNLOAD_DIR_AUDIO = os.path.join(DEFAULT_DOWNLOAD_FOLDER,"Audio")
-    DOWNLOAD_DIR_VIDEO = os.path.join(DEFAULT_DOWNLOAD_FOLDER,"Video")
+class Config:
+    def __init__(self, configparser: ConfigParser):
+        if configparser is None:
+            raise IllegalArgumentException("ConfigParser can not be None")
 
-    config = ConfigParser()
-    config['conf'] = {
-    'download_dir': DEFAULT_DOWNLOAD_FOLDER,
-    'download_dir_audio':DOWNLOAD_DIR_AUDIO,
-    'download_dir_video':DOWNLOAD_DIR_VIDEO,
-    'temp_dir':'temp',
-    'log_file':'log.txt',
-    'download_mode':'single',
-    'number_of_threads':'2'
-    }
+        self._download_dir = configparser.get('conf', 'download_dir')
+        self._download_dir_audio = configparser.get('conf', 'download_dir_audio')
+        self._download_dir_video = configparser.get('conf', 'download_dir_video')
+        self._temporary_dir = configparser.get('conf', 'temp_dir')
+        self._log_file_name = configparser.get('conf', 'log_file')
+        self._download_mode = configparser.get('conf', 'download_mode')
+        self._number_of_threads = configparser.get('conf', 'number_of_threads')
+        self._media_type = configparser.get('media_conf', 'media_type')
+        self._media_quality = configparser.get('media_conf', 'media_quality')
 
-    config['media_conf'] = {
-        'media_type':'audio',
-        'media_quality':'normal'
-    }
-    return config
+    @property
+    def get_download_dir(self):
+        return self._download_dir
 
+    @property
+    def get_download_dir_audio(self):
+        return self._download_dir_audio
 
-def get_configuration():
-    """Return Configuration parser object to the caller
-    Returns:
-        ConfigParser object -- the Configuration object created earlier will be returned
-    """
-    if not os.path.exists(os.path.join('../..', CONFIG_FILE_NAME)):
-        config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
-        generateConfigFile(config)
-        return config
-    else:
-        config = ConfigParser()
-        config.read(CONFIG_FILE_NAME)
-        return config
+    @property
+    def get_download_dir_video(self):
+        return self._download_dir_video
 
-def generateConfigFile(confini = None):
-    """persisting configure file to disk
-    Keyword Arguments:
-        confini {Configuration object} -- ConfigParser object to persist (default: {None})
-    """
-    if confini !=None:
-        with open(CONFIG_FILE_NAME,'w') as configfile:
-            # wrting modified Configuration object provided as argument
-            confini.write(configfile)
-    else:
-        with open(CONFIG_FILE_NAME,'w') as configfile:
-            # no argument provided write the default object to file
-            config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
-            config.write(configfile)
+    @property
+    def get_temporary_directory(self):
+        return self._temporary_dir
 
-if __name__ == '__main__':
-    generateConfigFile()
+    @property
+    def get_log_file_name(self):
+        return self._log_file_name
+
+    @property
+    def get_media_mode_type(self):
+        return self._media_type
+
+    @property
+    def get_media_quality(self):
+        return self._media_quality
