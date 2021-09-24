@@ -20,6 +20,9 @@ class _MediaFile:
     def get_media_type_extension(self) -> str:
         raise NotImplementedError("Please use a child class")
 
+    def start_download(self, absolute_path: str) -> None:
+        raise NotImplementedError("Please use a child class")
+
     @property
     def get_author(self) -> str:
         return self._author
@@ -42,10 +45,3 @@ class _MediaFile:
 
     def get_thumbnail(self) -> str:
         return self._thumbnail
-
-    def start_download(self, absolute_path: str):
-        pafy_stream = self.get_pafy_stream()
-        if pafy_stream is None:
-            raise NotFoundException("Unable to find pafy stream for download")
-
-        pafy_stream.download(absolute_path)
