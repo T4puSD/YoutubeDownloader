@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
@@ -7,7 +5,7 @@ from YTDownloader.Exceptions.general_exception import NotFoundException, Illegal
 from YTDownloader.Library.title_slugify import TitleSlugify
 
 
-class MediaFile(ABC):
+class MediaFile:
     def __init__(self, pafy_obj: BasePafy):
         if pafy_obj is None:
             raise NotFoundException("Pafy object can not be none")
@@ -17,10 +15,10 @@ class MediaFile(ABC):
         self._title_slugify = TitleSlugify()
 
     def get_pafy_stream(self) -> YtdlStream:
-        pass
+        raise NotImplementedError("Please use a child class")
 
     def get_media_type_extension(self) -> str:
-        pass
+        raise NotImplementedError("Please use a child class")
 
     @property
     def get_author(self) -> str:

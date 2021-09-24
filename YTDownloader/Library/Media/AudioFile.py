@@ -1,7 +1,7 @@
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
-from YTDownloader.Model.MediaFile import MediaFile
+from YTDownloader.Library.Media.MediaFile import MediaFile
 
 
 class AudioFile(MediaFile):
