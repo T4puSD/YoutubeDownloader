@@ -5,7 +5,7 @@ from YTDownloader.Exceptions.general_exception import NotFoundException, Illegal
 from YTDownloader.Library.title_slugify import TitleSlugify
 
 
-class MediaFile:
+class _MediaFile:
     def __init__(self, pafy_obj: BasePafy):
         if pafy_obj is None:
             raise NotFoundException("Pafy object can not be none")

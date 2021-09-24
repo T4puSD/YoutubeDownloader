@@ -1,10 +1,10 @@
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
-from YTDownloader.Library.Media.MediaFile import MediaFile
+from YTDownloader.Library.Media.MediaFile import _MediaFile
 
 
-class AudioFile(MediaFile):
+class AudioFile(_MediaFile):
     def __init__(self, pafy_obj: BasePafy):
         super().__init__(pafy_obj)
         self._audio_obj = pafy_obj.getbestaudio(preftype='m4a')
