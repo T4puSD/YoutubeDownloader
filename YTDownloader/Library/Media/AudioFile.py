@@ -15,6 +15,10 @@ class AudioFile(_MediaFile):
         self._audio_obj = pafy_obj.getbestaudio(preftype='m4a')
 
     def get_pafy_stream(self) -> YtdlStream:
+        if self._audio_obj is None:
+            raise NotFoundException("Unable to find pafy stream for download! \
+            Try again later or Try updating 'youtube-dl' dependency")
+
         return self._audio_obj
 
     def get_media_type_extension(self) -> str:
@@ -25,10 +29,6 @@ class AudioFile(_MediaFile):
 
     def start_download(self) -> None:
         pafy_stream = self.get_pafy_stream()
-        if pafy_stream is None:
-            raise NotFoundException("Unable to find pafy stream for download! \
-            Try again later or Try updating 'youtube-dl' dependency")
-
         # Preparing download directory
         self._prepare_download_dir()
         # Check if file already exists
