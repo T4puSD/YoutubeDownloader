@@ -2,8 +2,8 @@ import sys
 import signal
 import pyperclip
 import queue
-from YTDownloader.Configuration.config import get_configuration
-from YTDownloader.Configuration.debugger import logging
+from YTDownloader.Configuration.configuration import get_configuration
+from YTDownloader.debugger import logging
 from YTDownloader.advancedyvdown import reloadDownloadDirs
 from YTDownloader.advancedyvdown import start_audio_download
 from YTDownloader.advancedyvdown import start_video_download
@@ -13,10 +13,10 @@ from YTDownloader.Library.Threading.stoppableThread import StoppableThread
 # load basic Configuration files
 config = get_configuration()
 
-MEDIA_TYPE = config['media_conf'].get('media_type')
-MEDIA_QUALITY = config['media_conf'].get('media_quality')
-DOWNLOAD_MODE = config['conf'].get('download_mode')
-NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
+MEDIA_TYPE = config.get_media_mode_type
+MEDIA_QUALITY = config.get_media_quality
+DOWNLOAD_MODE = config.get_download_mode
+NUMBER_OF_THREADS = config.get_number_of_threads
 # print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
 
 task_queue = queue.Queue()
@@ -33,10 +33,10 @@ def reloadConfig():
 
     config = get_configuration()
 
-    MEDIA_TYPE = config['media_conf'].get('media_type')
-    MEDIA_QUALITY = config['media_conf'].get('media_quality')
-    DOWNLOAD_MODE = config['conf'].get('download_mode')
-    NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
+    MEDIA_TYPE = config.get_media_mode_type
+    MEDIA_QUALITY = config.get_media_quality
+    DOWNLOAD_MODE = config.get_download_mode
+    NUMBER_OF_THREADS = config.get_number_of_threads
 
 
 class ClipBoardThread(StoppableThread):
@@ -45,10 +45,10 @@ class ClipBoardThread(StoppableThread):
         self.queue = queue
 
     def run(self):
-        MEDIA_TYPE = config['media_conf'].get('media_type')
-        MEDIA_QUALITY = config['media_conf'].get('media_quality')
-        DOWNLOAD_MODE = config['conf'].get('download_mode')
-        NUMBER_OF_THREADS = config['conf'].getint('number_of_threads')
+        MEDIA_TYPE = config.get_media_mode_type
+        MEDIA_QUALITY = config.get_media_quality
+        DOWNLOAD_MODE = config.get_download_mode
+        NUMBER_OF_THREADS = config.get_number_of_threads
         prev_url = pyperclip.paste()
         while not self.stopped():
             current_url = pyperclip.paste()

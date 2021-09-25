@@ -2,7 +2,7 @@ import os
 import requests
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, error
-from YTDownloader.Configuration.debugger import logging
+from YTDownloader.debugger import logging
 
 
 def add_picture(audio_path, picture_url):

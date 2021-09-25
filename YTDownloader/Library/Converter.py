@@ -1,5 +1,5 @@
 import ffmpeg
-from YTDownloader.Configuration.debugger import logging
+from YTDownloader.debugger import logging
 
 
 def convert_to_audio(input_file_path, output_file_path):

@@ -1,7 +1,7 @@
 import pafy
 import time
 import enum
-from YTDownloader.Configuration.debugger import logging
+from YTDownloader.debugger import logging
 
 
 class FormatType(enum.Enum):

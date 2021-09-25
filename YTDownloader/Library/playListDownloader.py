@@ -1,6 +1,6 @@
 import concurrent.futures
 from YTDownloader.Library.getuList import SongListGenerator
-from YTDownloader.Configuration.debugger import logging
+from YTDownloader.debugger import logging
 from YTDownloader.advancedyvdown import start_audio_download, start_video_download
 
 #url = 'https://www.youtube.com/playlist?list=PLRiSVT9MWtYwyhhgVNnRDTpCRvF-t2lc8'

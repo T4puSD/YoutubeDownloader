@@ -3,21 +3,20 @@ import sys
 import pyperclip
 import subprocess
 import argparse
-from YTDownloader.Configuration.debugger import logging
-from YTDownloader.Configuration.config import get_configuration
+from YTDownloader.debugger import logging
+from YTDownloader.Configuration.configuration import get_configuration
 from YTDownloader.Library.title_slugify import TitleSlugify
 from YTDownloader.Library.notifier import notifyAboutTheService
-from YTDownloader.Library.MetaDataEditor import add_title, add_picture
 from YTDownloader.Library.ffmpeg_path import FfmpegPath
-from YTDownloader.Library.Converter import convert_to_audio
-from YTDownloader.Library.PafyHandler import FormatType, get_pafy_obj
+from YTDownloader.Library.pafy_handler import FormatType, get_pafy_obj
+from YTDownloader.Library.Media.AudioFile import AudioFile
 
 # load basic Configuration files
 config = get_configuration()
 # Static Variables
-DOWN_DIR_AUDIO = config['conf'].get('download_dir_audio')
-DOWN_DIR_VIDEO = config['conf'].get('download_dir_video')
-TEMP_DIR = config['conf'].get('temp_dir')
+DOWN_DIR_AUDIO = config.get_download_dir_audio
+DOWN_DIR_VIDEO = config.get_download_dir_video
+TEMP_DIR = config.get_temporary_directory
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 FFMPEG_LOCATION = FfmpegPath.getFFmpegExecutablePath()
@@ -29,8 +28,8 @@ def reloadDownloadDirs():
 
     config = get_configuration()
 
-    DOWN_DIR_AUDIO = config['conf'].get('download_dir_audio')
-    DOWN_DIR_VIDEO = config['conf'].get('download_dir_video')
+    DOWN_DIR_AUDIO = config.get_download_dir_audio
+    DOWN_DIR_VIDEO = config.get_download_dir_video
 
 
 def start_high_quality_video_download(url):
@@ -174,62 +173,10 @@ def start_audio_download(url):
     """
     logging.debug("Initiating - {}".format(start_audio_download.__name__))
 
-    stream_obj = get_pafy_obj(url)
-
-    if stream_obj is not None:
-        # Normalizing Title
-        slugify_audio_title = TitleSlugify().slugify_for_windows(stream_obj.title + '.' + stream_obj.extension)
-        path_to_download = os.path.join(DOWN_DIR_AUDIO, slugify_audio_title)
-
-        # checking if the file already exists
-        if not os.path.exists(path_to_download) and not os.path.exists(path_to_download.replace('.m4a', '.mp3')):
-            # starting download
-            try:
-                if not os.path.exists(DOWN_DIR_AUDIO):
-                    try:
-                        logging.debug("Making Directory: {}".format(DOWN_DIR_AUDIO))
-                        os.makedirs(DOWN_DIR_AUDIO)
-                        # os.mkdir(DOWN_DIR_AUDIO)
-                    except Exception as e:
-                        logging.debug("Error occurred in making Directory: {}".format(DOWN_DIR_AUDIO))
-                        logging.debug(e)
-
-                logging.debug("Downloading Audio: " + TitleSlugify().slugify_for_windows(stream_obj.title))
-                # initiate the download
-                stream_obj.download(filepath=path_to_download)
-                logging.debug("Saving to: " + os.path.abspath(DOWN_DIR_AUDIO))
-
-                # converting to mp3
-                try:
-                    output_path = os.path.join(DOWN_DIR_AUDIO, slugify_audio_title.replace('.m4a', '.mp3'))
-                    convert_to_audio(path_to_download, output_path)
-                    logging.debug("DOWNLOADED=> " + slugify_audio_title.replace("m4a", "mp3"))
-                    # adding unicode title from stream obj
-                    add_title(path_to_download.replace('m4a', 'mp3'), stream_obj.title)
-                    add_picture(path_to_download.replace('m4a', 'mp3'), stream_obj)
-                    notifyAboutTheService("Downloaded", slugify_audio_title.replace("m4a", "mp3"))
-                except Exception as e:
-                    notifyAboutTheService("Error Downloading", slugify_audio_title.replace("m4a", "mp3"))
-                    logging.debug("Error occurred in converting file")
-                    logging.debug(e)
-
-                try:
-                    # subprocess.run(['rm',path_to_download])
-                    logging.debug("Removing m4a file")
-                    os.remove(path_to_download)
-                except Exception as e:
-                    logging.debug("Error removing actual file")
-                    logging.debug(e)
-
-            except Exception as e:
-                logging.debug("Unable to download. Error occurred")
-                logging.debug(e)
-        else:
-            logging.debug("File Already Exists! Path: " + path_to_download)
-    else:
-        logging.debug(
-            """Unable to find the audio file at this time. Timeout!! Try again later or Try updating 'youtube-dl' 
-            dependency.""")
+    try:
+        AudioFile(get_pafy_obj(url)).start_download()
+    except Exception as ex:
+        logging.debug(start_audio_download.__name__ + "- Exception: " + ex.__str__())
 
 
 # this code will only run if it is executed directly
@@ -261,7 +208,7 @@ if __name__ == "__main__":
     else:
         url = pyperclip.paste() if len(pyperclip.paste()) > 10 \
                                    and pyperclip.paste().startswith('https://www.youtube.com/watch?v=') else None
-        if url != None:
+        if url is not None:
             if args.video:
                 if args.highquality:
                     start_high_quality_video_download(url)

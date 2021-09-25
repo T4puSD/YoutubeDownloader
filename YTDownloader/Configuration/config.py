@@ -13,7 +13,8 @@ class Config:
         self._temporary_dir = configparser.get('conf', 'temp_dir')
         self._log_file_name = configparser.get('conf', 'log_file')
         self._download_mode = configparser.get('conf', 'download_mode')
-        self._number_of_threads = configparser.get('conf', 'number_of_threads')
+        self._number_of_threads = configparser.getint('conf', 'number_of_threads')
+        self._download_mode = configparser.get('conf', 'download_mode')
         self._media_type = configparser.get('media_conf', 'media_type')
         self._media_quality = configparser.get('media_conf', 'media_quality')
 
@@ -36,6 +37,14 @@ class Config:
     @property
     def get_log_file_name(self):
         return self._log_file_name
+
+    @property
+    def get_number_of_threads(self):
+        return self._number_of_threads
+
+    @property
+    def get_download_mode(self):
+        return self._download_mode
 
     @property
     def get_media_mode_type(self):
