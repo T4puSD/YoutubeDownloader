@@ -80,4 +80,4 @@ class _MediaFile:
     def _check_if_file_already_exist(self) -> None:
         if os.path.exists(self.get_download_path()) or \
                 os.path.exists(self.get_conversion_output_path()):
-            raise FileExistsError("File Already Exists!")
+            raise FileExistsError("File Already Exists!: " + self.get_title())
