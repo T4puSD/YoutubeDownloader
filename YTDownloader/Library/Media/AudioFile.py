@@ -26,8 +26,13 @@ class AudioFile(_MediaFile):
     def start_download(self) -> None:
         pafy_stream = self.get_pafy_stream()
         if pafy_stream is None:
-            raise NotFoundException("Unable to find pafy stream for download")
+            raise NotFoundException("Unable to find pafy stream for download! \
+            Try again later or Try updating 'youtube-dl' dependency")
 
+        # Preparing download directory
+        self._prepare_download_dir()
+        # Check if file already exists
+        self._check_if_file_already_exist()
         # Download
         pafy_stream.download(self.get_download_path())
         # Convert

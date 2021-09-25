@@ -7,6 +7,7 @@ from YTDownloader.Exceptions.general_exception import NotFoundException, Illegal
 from YTDownloader.Library.title_slugify import TitleSlugify
 from YTDownloader.Configuration.config import Config
 from YTDownloader.Configuration.configuration import get_configuration
+from YTDownloader.debugger import logging
 
 
 class _MediaFile:
@@ -65,3 +66,18 @@ class _MediaFile:
 
     def get_conversion_output_path(self) -> str:
         return self.get_download_dir() + os.sep + self.get_converted_title()
+
+    def _prepare_download_dir(self) -> None:
+        if not os.path.exists(self.get_download_dir()):
+            try:
+                logging.debug("Making Directory: {}".format(self.get_download_dir()))
+                os.makedirs(self.get_download_dir())
+            except Exception as e:
+                logging.debug("Error occurred in making Directory: {}".format(self.get_download_dir()))
+                logging.debug(e)
+                raise e
+
+    def _check_if_file_already_exist(self) -> None:
+        if os.path.exists(self.get_download_path()) or \
+                os.path.exists(self.get_conversion_output_path()):
+            raise FileExistsError("File Already Exists!")
