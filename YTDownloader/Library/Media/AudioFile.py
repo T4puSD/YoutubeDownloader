@@ -6,7 +6,7 @@ from pafy.backend_youtube_dl import YtdlStream
 from YTDownloader.Exceptions.general_exception import NotFoundException
 from YTDownloader.Library.Media.MediaFile import _MediaFile
 from YTDownloader.Library.Media.MetaDataEditor import add_title, add_picture
-from YTDownloader.Library.Converter import convert_to_audio
+from YTDownloader.Library.Media.Converter import convert_to_audio
 
 
 class AudioFile(_MediaFile):
