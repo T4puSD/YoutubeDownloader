@@ -40,7 +40,7 @@ def get_configuration() -> Config:
     Returns:
         ConfigParser object -- the Configuration object created earlier will be returned
     """
-    if not os.path.exists(os.path.join('../..', CONFIG_FILE_NAME)):
+    if not os.path.exists(CONFIG_FILE_NAME):
         config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
         generateConfigFile(config)
         return Config(config)
@@ -57,7 +57,7 @@ def generateConfigFile(confini=None):
     """
     if confini is not None:
         with open(CONFIG_FILE_NAME, 'w') as configfile:
-            # wrting modified Configuration object provided as argument
+            # writing modified Configuration object provided as argument
             confini.write(configfile)
     else:
         with open(CONFIG_FILE_NAME, 'w') as configfile:
@@ -67,4 +67,4 @@ def generateConfigFile(confini=None):
 
 
 if __name__ == '__main__':
-    generateConfigFile()
+    get_configuration()
