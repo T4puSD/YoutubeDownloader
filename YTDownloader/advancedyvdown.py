@@ -3,6 +3,9 @@ import sys
 import pyperclip
 import subprocess
 import argparse
+
+from YTDownloader.Enums.video_quality import VideoQuality
+from YTDownloader.Library.Media.VideoFile import VideoFile
 from YTDownloader.debugger import logging
 from YTDownloader.Configuration.configuration import get_configuration
 from YTDownloader.Library.title_slugify import TitleSlugify
@@ -132,37 +135,10 @@ def start_video_download(url):
     """
     logging.debug("Initiating - {}".format(start_video_download.__name__))
 
-    stream_obj = get_pafy_obj(url, FormatType.VIDEO)
-
-    if stream_obj is not None:
-        # slugify title
-        slugify_video_title = TitleSlugify().slugify_for_windows(stream_obj.title + '.' + stream_obj.extension)
-        path_to_download = os.path.join(DOWN_DIR_VIDEO, slugify_video_title)
-
-        if not os.path.exists(path_to_download):
-            # starting download
-            try:
-                if not os.path.exists(DOWN_DIR_VIDEO):
-                    try:
-                        logging.debug("Making Directory: {}".format(DOWN_DIR_VIDEO))
-                        os.makedirs(DOWN_DIR_VIDEO)
-                        # os.mkdir(DOWN_DIR_VIDEO)
-                    except Exception as e:
-                        logging.debug("Error occurred in making Directory: {}".format(TEMP_DIR))
-                        logging.debug(e)
-                logging.debug("Downloading Video: " + TitleSlugify().slugify_for_windows(stream_obj.title))
-                logging.debug("Saving to: " + os.path.abspath(DOWN_DIR_VIDEO))
-                stream_obj.download(filepath=path_to_download)
-                logging.debug("DOWNLOADED=> " + slugify_video_title)
-                notifyAboutTheService("Downloaded", slugify_video_title)
-            except Exception as e:
-                notifyAboutTheService("Error Downloading", slugify_video_title)
-                logging.debug("Unable to download. Error occurred")
-                logging.debug(e)
-        else:
-            logging.debug("File Already Exists! Path: " + path_to_download)
-    else:
-        logging.debug("Unable to find the video file at this time. Timeout!! Try again later.")
+    try:
+        VideoFile(get_pafy_obj(url), VideoQuality.Q360P).start_download()
+    except Exception as ex:
+        logging.debug(start_audio_download.__name__ + "- Exception: " + ex.__str__())
 
 
 def start_audio_download(url):
