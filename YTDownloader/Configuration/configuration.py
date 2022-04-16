@@ -3,68 +3,60 @@ import pathlib
 from configparser import ConfigParser
 
 from YTDownloader.Configuration.config import Config
-
-CONFIG_FILE_NAME = '../../configure.ini'
-# Configuration = ConfigParser()
-
-HOME = pathlib.Path.home()
-# hard coding the default download folder
-USER_DOWNLOAD_FOLDER = os.path.join(HOME, "Downloads")
-DEFAULT_DOWNLOAD_FOLDER = os.path.join(USER_DOWNLOAD_FOLDER, "YoutubeMusic")
+from YTDownloader.Enums import MediaType, DownloadMode, VideoQuality
+from YTDownloader.Exceptions.general_exception import IllegalArgumentException
 
 
-def constructConfig(DEFAULT_DOWNLOAD_FOLDER) -> ConfigParser:
-    DOWNLOAD_DIR_AUDIO = os.path.join(DEFAULT_DOWNLOAD_FOLDER, "Audio")
-    DOWNLOAD_DIR_VIDEO = os.path.join(DEFAULT_DOWNLOAD_FOLDER, "Video")
+class Configuration:
+    def __init__(self):
+        self._home = pathlib.Path.home()
+        self._config_file_path = os.path.join('..', '..', 'configure.ini')
+        self._user_download_directory = os.path.join(self._home, 'Downloads')
+        self._default_download_directory = os.path.join(self._user_download_directory, 'YoutubeMusic')
+        self._audio_download_directory = os.path.join(self._default_download_directory, 'Audio')
+        self._video_download_directory = os.path.join(self._default_download_directory, 'Video')
+        self._temp_dir = 'temp'
+        self._log_file = 'log.txt'
+        self._download_mode = DownloadMode.SINGLE
+        self._number_of_threads = 2
+        self.media_type = MediaType.AUDIO
+        self.video_quality = VideoQuality.Q360P
+        self._config_parser: ConfigParser = self._construct_config()
 
-    config = ConfigParser()
-    config['conf'] = {
-        'download_dir': DEFAULT_DOWNLOAD_FOLDER,
-        'download_dir_audio': DOWNLOAD_DIR_AUDIO,
-        'download_dir_video': DOWNLOAD_DIR_VIDEO,
-        'temp_dir': 'temp',
-        'log_file': 'log.txt',
-        'download_mode': 'single',
-        'number_of_threads': '2'
-    }
+    def is_config_file_exists(self) -> bool:
+        return os.path.exists(self._config_file_path)
 
-    config['media_conf'] = {
-        'media_type': 'audio',
-        'media_quality': 'normal'
-    }
-    return config
+    def _construct_config(self) -> ConfigParser:
+        configparser = ConfigParser()
+        configparser['conf'] = {
+            'download_dir': self._default_download_directory,
+            'download_dir_audio': self._audio_download_directory,
+            'download_dir_video': self._video_download_directory,
+            'temp_dir': self._temp_dir,
+            'log_file': self._log_file,
+            'download_mode': self._download_mode.name,
+            'number_of_threads': self._number_of_threads
+        }
 
+        configparser['media_conf'] = {
+            'media_type': self.media_type.name,
+            'media_quality': self.video_quality.name
+        }
+        return configparser
 
-def get_configuration() -> Config:
-    """Return Configuration parser object to the caller
-    Returns:
-        ConfigParser object -- the Configuration object created earlier will be returned
-    """
-    if not os.path.exists(CONFIG_FILE_NAME):
-        config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
-        generateConfigFile(config)
-        return Config(config)
-    else:
-        config = ConfigParser()
-        config.read(CONFIG_FILE_NAME)
-        return Config(config)
+    def load_configuration(self):
+        self._config_parser.read(self._config_file_path)
 
+    def save_configuration(self):
+        self.re_construct_configuration()
+        with open(self._config_file_path, 'w') as configfile:
+            self._config_parser.write(configfile)
 
-def generateConfigFile(confini=None):
-    """persisting configure file to disk
-    Keyword Arguments:
-        confini {Configuration object} -- ConfigParser object to persist (default: {None})
-    """
-    if confini is not None:
-        with open(CONFIG_FILE_NAME, 'w') as configfile:
-            # writing modified Configuration object provided as argument
-            confini.write(configfile)
-    else:
-        with open(CONFIG_FILE_NAME, 'w') as configfile:
-            # no argument provided write the default object to file
-            config = constructConfig(DEFAULT_DOWNLOAD_FOLDER)
-            config.write(configfile)
+    def re_construct_configuration(self):
+        self._config_parser = self._construct_config()
 
-
-if __name__ == '__main__':
-    get_configuration()
+    def get_config(self) -> Config:
+        if self._config_parser is None:
+            raise IllegalArgumentException('Config parser can not be None')
+        self.re_construct_configuration()
+        return Config(self._config_parser)

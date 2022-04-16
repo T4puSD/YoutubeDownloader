@@ -1,7 +1,6 @@
 import logging
-from YTDownloader.Configuration.configuration import get_configuration
 
-logging.basicConfig(filename=get_configuration().get_log_file_name,
+logging.basicConfig(filename='../../log.txt',
                     level=logging.DEBUG,
                     format="%(asctime)s:%(levelname)s:%(filename)s:%(lineno)d:%(message)s"
                     )

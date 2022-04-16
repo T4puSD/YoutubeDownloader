@@ -1,7 +1,7 @@
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
-from YTDownloader.Enums.video_quality import VideoQuality
+from YTDownloader.Enums import VideoQuality
 from YTDownloader.Exceptions.general_exception import NotFoundException, IllegalArgumentException
 from YTDownloader.Library.Media.MediaFile import _MediaFile
 

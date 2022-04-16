@@ -4,10 +4,10 @@ import pyperclip
 import subprocess
 import argparse
 
-from YTDownloader.Enums.video_quality import VideoQuality
+from YTDownloader import configuration
+from YTDownloader.Enums import VideoQuality
 from YTDownloader.Library.Media.VideoFile import VideoFile
 from YTDownloader.debugger import logging
-from YTDownloader.Configuration.configuration import get_configuration
 from YTDownloader.Library.title_slugify import TitleSlugify
 from YTDownloader.Library.notifier import notifyAboutTheService
 from YTDownloader.Library.ffmpeg_path import FfmpegPath
@@ -15,7 +15,7 @@ from YTDownloader.Library.pafy_handler import FormatType, get_pafy_obj
 from YTDownloader.Library.Media.AudioFile import AudioFile
 
 # load basic Configuration files
-config = get_configuration()
+config = configuration.get_config()
 # Static Variables
 DOWN_DIR_AUDIO = config.get_download_dir_audio
 DOWN_DIR_VIDEO = config.get_download_dir_video
@@ -23,16 +23,6 @@ TEMP_DIR = config.get_temporary_directory
 FFMPEG_LOG = '-loglevel'
 FFMPEG_LOG_LEVEL = 'warning'
 FFMPEG_LOCATION = FfmpegPath.getFFmpegExecutablePath()
-
-
-def reloadDownloadDirs():
-    global DOWN_DIR_AUDIO
-    global DOWN_DIR_VIDEO
-
-    config = get_configuration()
-
-    DOWN_DIR_AUDIO = config.get_download_dir_audio
-    DOWN_DIR_VIDEO = config.get_download_dir_video
 
 
 def start_high_quality_video_download(url):

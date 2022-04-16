@@ -1,4 +1,6 @@
 from configparser import ConfigParser
+
+from YTDownloader.Enums import DownloadMode, MediaType, VideoQuality
 from YTDownloader.Exceptions.general_exception import IllegalArgumentException
 
 
@@ -12,11 +14,10 @@ class Config:
         self._download_dir_video = configparser.get('conf', 'download_dir_video')
         self._temporary_dir = configparser.get('conf', 'temp_dir')
         self._log_file_name = configparser.get('conf', 'log_file')
-        self._download_mode = configparser.get('conf', 'download_mode')
+        self._download_mode = DownloadMode[configparser.get('conf', 'download_mode')]
         self._number_of_threads = configparser.getint('conf', 'number_of_threads')
-        self._download_mode = configparser.get('conf', 'download_mode')
-        self._media_type = configparser.get('media_conf', 'media_type')
-        self._media_quality = configparser.get('media_conf', 'media_quality')
+        self._media_type = MediaType[configparser.get('media_conf', 'media_type')]
+        self._media_quality = VideoQuality[configparser.get('media_conf', 'media_quality')]
 
     @property
     def get_download_dir(self):
@@ -43,13 +44,13 @@ class Config:
         return self._number_of_threads
 
     @property
-    def get_download_mode(self):
+    def get_download_mode(self) -> DownloadMode:
         return self._download_mode
 
     @property
-    def get_media_mode_type(self):
+    def get_media_type(self) -> MediaType:
         return self._media_type
 
     @property
-    def get_media_quality(self):
+    def get_media_quality(self) -> VideoQuality:
         return self._media_quality

@@ -3,10 +3,10 @@ import os
 from pafy.backend_shared import BasePafy
 from pafy.backend_youtube_dl import YtdlStream
 
+from YTDownloader import configuration
 from YTDownloader.Exceptions.general_exception import NotFoundException, IllegalArgumentException
 from YTDownloader.Library.title_slugify import TitleSlugify
 from YTDownloader.Configuration.config import Config
-from YTDownloader.Configuration.configuration import get_configuration
 from YTDownloader.debugger import logging
 
 
@@ -18,7 +18,7 @@ class _MediaFile:
         self._author = pafy_obj.author
         self._thumbnail = pafy_obj.thumb
         self._title_slugify = TitleSlugify()
-        self._config = get_configuration()
+        self._config = configuration.get_config()
 
     def get_pafy_stream(self) -> YtdlStream:
         raise NotImplementedError("Please use a child class")

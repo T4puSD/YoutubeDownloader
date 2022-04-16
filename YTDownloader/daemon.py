@@ -2,41 +2,16 @@ import sys
 import signal
 import pyperclip
 import queue
-from YTDownloader.Configuration.configuration import get_configuration
+
+from YTDownloader import configuration
+from YTDownloader.Enums import MediaType, VideoQuality
 from YTDownloader.debugger import logging
-from YTDownloader.advancedyvdown import reloadDownloadDirs
 from YTDownloader.advancedyvdown import start_audio_download
 from YTDownloader.advancedyvdown import start_video_download
 from YTDownloader.advancedyvdown import start_high_quality_video_download
 from YTDownloader.Library.Threading.stoppableThread import StoppableThread
 
-# load basic Configuration files
-config = get_configuration()
-
-MEDIA_TYPE = config.get_media_mode_type
-MEDIA_QUALITY = config.get_media_quality
-DOWNLOAD_MODE = config.get_download_mode
-NUMBER_OF_THREADS = config.get_number_of_threads
-# print(MEDIA_TYPE,MEDIA_QUALITY,DOWNLOAD_MODE)
-
 task_queue = queue.Queue()
-
-
-def reloadConfig():
-    # reloading download directories
-    # in advancedyvdonw.py script
-    reloadDownloadDirs()
-    global MEDIA_TYPE
-    global MEDIA_QUALITY
-    global DOWNLOAD_MODE
-    global NUMBER_OF_THREADS
-
-    config = get_configuration()
-
-    MEDIA_TYPE = config.get_media_mode_type
-    MEDIA_QUALITY = config.get_media_quality
-    DOWNLOAD_MODE = config.get_download_mode
-    NUMBER_OF_THREADS = config.get_number_of_threads
 
 
 class ClipBoardThread(StoppableThread):
@@ -45,10 +20,6 @@ class ClipBoardThread(StoppableThread):
         self.queue = queue
 
     def run(self):
-        MEDIA_TYPE = config.get_media_mode_type
-        MEDIA_QUALITY = config.get_media_quality
-        DOWNLOAD_MODE = config.get_download_mode
-        NUMBER_OF_THREADS = config.get_number_of_threads
         prev_url = pyperclip.paste()
         while not self.stopped():
             current_url = pyperclip.paste()
@@ -65,6 +36,7 @@ class WorkerThread(StoppableThread):
         self.thread_name = thread_name
 
     def run(self):
+        config = configuration.get_config()
         while not self.stopped():
             try:
                 url = self.task_queue.get(timeout=1)
@@ -72,23 +44,23 @@ class WorkerThread(StoppableThread):
                 pass
             else:
                 try:
-                    if MEDIA_TYPE == 'audio':
+                    if config.get_media_type == MediaType.AUDIO:
                         start_audio_download(url)
                         task_queue.task_done()
                         logging.debug(self.thread_name + " Completed")
-                    elif MEDIA_TYPE == 'video':
-                        if MEDIA_QUALITY == 'normal':
+                    elif config.get_media_type == MediaType.VIDEO:
+                        if config.get_media_quality == VideoQuality.Q360P:
                             start_video_download(url)
                             task_queue.task_done()
                             logging.debug(self.thread_name + " Completed")
-                        elif MEDIA_QUALITY == 'hq':
+                        elif config.get_media_quality == VideoQuality.Q1080P:
                             start_high_quality_video_download(url)
                             task_queue.task_done()
                             logging.debug(self.thread_name + " Completed")
                     if task_queue.empty():
                         logging.debug("No pending task in the queue")
                 except Exception as e:
-                    logging.debug("Error occured in daemon loop")
+                    logging.debug("Error occurred in daemon loop")
                     logging.debug(e)
 
 
@@ -96,14 +68,14 @@ class WorkerThread(StoppableThread):
 mainThread = ClipBoardThread(task_queue)
 
 worker_thread_list = []
-for i in range(NUMBER_OF_THREADS):
+for i in range(configuration.get_config().get_number_of_threads):
     t = WorkerThread(task_queue, f'Thread-{i}')
-    t.setDaemon(True)
+    t.daemon = True
     # t.start()
     worker_thread_list.append(t)
 
 
-def stopTheServers():
+def stop_the_servers():
     result = False
     # checkin if main thread is alive
     if mainThread.is_alive():
@@ -128,25 +100,28 @@ def stopTheServers():
     return result
 
 
-def resetTheThreads():
+def reset_the_threads():
     # task_queue = queue.Queue()
     global mainThread
     global worker_thread_list
     mainThread = ClipBoardThread(task_queue)
     worker_thread_list.clear()
-    for i in range(NUMBER_OF_THREADS):
+    for i in range(configuration.get_config().get_number_of_threads):
         t = WorkerThread(task_queue, f'Thread-{i}')
         worker_thread_list.append(t)
 
 
 def sigint_handler(signum, frame):
     logging.debug('Shutting Threads down...')
-    stopTheServers()
+    stop_the_servers()
     sys.exit(0)
 
 
-def startTheServers():
-    logging.debug("Starting Daemon Server! Modes: {} {} {}".format(MEDIA_TYPE, MEDIA_QUALITY, DOWNLOAD_MODE))
+def start_the_servers():
+    config = configuration.get_config()
+    logging.debug("Starting Daemon Server! Modes: {} {} {}"
+                  .format(config.get_media_type, config.get_media_quality, config.get_download_mode))
+
     if mainThread.is_alive():
         return True
 
@@ -174,7 +149,7 @@ def startTheServers():
 
 def main():
     signal.signal(signal.SIGINT, sigint_handler)
-    startTheServers()
+    start_the_servers()
 
 
 if __name__ == '__main__':
