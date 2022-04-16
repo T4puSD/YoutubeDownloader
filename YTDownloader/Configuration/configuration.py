@@ -21,12 +21,11 @@ class Configuration:
         self._number_of_threads = 2
         self.media_type = MediaType.AUDIO
         self.video_quality = VideoQuality.Q360P
-        self._config_parser: ConfigParser = self._construct_config()
 
     def is_config_file_exists(self) -> bool:
         return os.path.exists(self._config_file_path)
 
-    def _construct_config(self) -> ConfigParser:
+    def get_configparser(self) -> ConfigParser:
         configparser = ConfigParser()
         configparser['conf'] = {
             'download_dir': self._default_download_directory,
@@ -45,18 +44,30 @@ class Configuration:
         return configparser
 
     def load_configuration(self):
-        self._config_parser.read(self._config_file_path)
+        configparser = ConfigParser()
+        configparser.read(self._config_file_path)
+
+        if configparser is None:
+            raise IllegalArgumentException("ConfigParser can not be None")
+
+        self._user_download_directory = configparser.get('conf', 'download_dir')
+        self._default_download_directory = configparser.get('conf', 'download_dir')
+        self._audio_download_directory = configparser.get('conf', 'download_dir_audio')
+        self._video_download_directory = configparser.get('conf', 'download_dir_video')
+        self._temp_dir = configparser.get('conf', 'temp_dir')
+        self._log_file = configparser.get('conf', 'log_file')
+        self._download_mode = DownloadMode[configparser.get('conf', 'download_mode')]
+        self._number_of_threads = configparser.getint('conf', 'number_of_threads')
+        self.media_type = MediaType[configparser.get('media_conf', 'media_type')]
+        self.video_quality = VideoQuality[configparser.get('media_conf', 'media_quality')]
 
     def save_configuration(self):
-        self.re_construct_configuration()
+        configparser = self.get_configparser()
         with open(self._config_file_path, 'w') as configfile:
-            self._config_parser.write(configfile)
-
-    def re_construct_configuration(self):
-        self._config_parser = self._construct_config()
+            configparser.write(configfile)
 
     def get_config(self) -> Config:
-        if self._config_parser is None:
+        configparser = self.get_configparser()
+        if configparser is None:
             raise IllegalArgumentException('Config parser can not be None')
-        self.re_construct_configuration()
-        return Config(self._config_parser)
+        return Config(configparser)
