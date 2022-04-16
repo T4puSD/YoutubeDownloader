@@ -10,7 +10,7 @@ from YTDownloader.Exceptions.general_exception import IllegalArgumentException
 class Configuration:
     def __init__(self):
         self._home = pathlib.Path.home()
-        self._config_file_path = os.path.join('..', '..', 'configure.ini')
+        self._config_file_path = os.path.join('configure.ini')
         self._user_download_directory = os.path.join(self._home, 'Downloads')
         self._default_download_directory = os.path.join(self._user_download_directory, 'YoutubeMusic')
         self._audio_download_directory = os.path.join(self._default_download_directory, 'Audio')
